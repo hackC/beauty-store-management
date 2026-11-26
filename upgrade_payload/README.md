@@ -6,6 +6,22 @@
 - 排班与预约支持美容师班次、多人预约、可约时间计算、休息时间块、候补和客户档案。
 - 门店管理支持员工与权限组、操作审计、经营报表、全量备份与恢复。
 
+安装、建档、预约、授权和备份操作见[详细使用教程](docs/USER_GUIDE.md)。
+
+## 界面截图
+
+截图均使用合成演示数据。
+
+### 库存看板
+
+![库存看板上的补货提醒和近期流水](docs/screenshots/inventory-dashboard.png)
+
+### 每日排班
+
+![美容师分列显示的预约时间轴](docs/screenshots/schedule-board.png)
+
+商品建档界面可参见[新增商品截图](docs/screenshots/inventory-products.png)。
+
 ## Windows 本地试跑
 
 在项目目录打开 PowerShell，使用 Python 3.11 或 3.12。以下命令在首次试跑时创建虚拟环境和示例运行配置。
