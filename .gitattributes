@@ -1,0 +1,2 @@
+# Keep checkout bytes consistent with the mirrored sources and upgrade test archive.
+* -text whitespace=cr-at-eol

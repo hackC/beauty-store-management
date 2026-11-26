@@ -1,0 +1,490 @@
+/* The time range scales to the scrollport, including the space below sticky headers. */
+body[data-app-page="schedule"] .timeline-wrap {
+  height: min(820px, calc(100vh - 138px));
+  height: min(820px, calc(100svh - 138px));
+  min-height: 180px;
+  max-height: none;
+}
+
+body[data-app-page="schedule"] .timeline {
+  --schedule-axis-width: 62px;
+  --schedule-staff-base: 150px;
+  min-width: max(100%, calc(var(--schedule-axis-width) + var(--staff-count) * var(--schedule-staff-width, var(--schedule-staff-base))));
+  grid-template-columns: var(--schedule-axis-width) repeat(var(--staff-count), minmax(var(--schedule-staff-width, var(--schedule-staff-base)), 1fr));
+}
+
+.timeline[data-staff-width="compact"] { --schedule-staff-width: 118px; }
+.timeline[data-staff-width="wide"] { --schedule-staff-width: 210px; }
+
+@media (max-width: 640px) {
+  body[data-app-page="schedule"] .timeline-wrap {
+    height: calc(100vh - 152px);
+    height: calc(100svh - 152px);
+  }
+  body[data-app-page="schedule"] .timeline {
+    --schedule-axis-width: 54px;
+    --schedule-staff-base: 136px;
+  }
+  .timeline[data-staff-width="compact"] { --schedule-staff-width: 106px; }
+  .timeline[data-staff-width="wide"] { --schedule-staff-width: 170px; }
+  .schedule-board-heading .subtle { display: none; }
+}
+
+.timeline .time-col { position: sticky; left: 0; z-index: 10; }
+.timeline .staff-head > span:nth-child(2) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.timeline .time-body, .timeline .staff-body { background: var(--panel); }
+.timeline .staff-body.drag-over { background-color: #f1f3ff; }
+.timeline .time-body { overflow: hidden; }
+.timeline .time-grid-line, .timeline .time-grid-label {
+  position: absolute;
+  top: calc(var(--ppm) * var(--grid-minute));
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.timeline .time-grid-line { border-top: 1px solid #a5b4c7; z-index: 1; }
+.timeline .time-grid-line.half-hour { border-top: 1px dashed #b4c2d1; }
+.timeline .time-grid-label {
+  z-index: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  line-height: 1;
+  padding-top: 4px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #34465d;
+}
+.timeline .time-grid-label.half-hour { color: #596c83; font-size: 11px; font-weight: 600; }
+.timeline[data-half-labels="false"] .time-grid-label.half-hour,
+.timeline[data-card-notes="false"] .appt .anote { display: none; }
+.timeline .appt { min-height: 0; }
+body[data-app-page="schedule"] .timeline .appt .aname { font-size: var(--card-font, 15px); }
+@media (max-width: 640px) {
+  body[data-app-page="schedule"] .timeline .appt .aname { font-size: calc(var(--card-font, 15px) + 1px); }
+}
+.timeline .appt.appt-short { padding: 0 4px; }
+.timeline .appt-short :is(.atime, .acustomer, .aduration, .anote) { display: none; }
+.timeline .appt-short .aname { margin: 0; line-height: 1.15; }
+.schedule-board-heading { min-width: 0; }
+.schedule-board-heading .legend { margin-top: 4px; }
+#styleBtn { flex-shrink: 0; }
+.schedule-display-check { display: inline-flex; gap: 8px; align-items: center; }
+.field .schedule-display-check input { width: 18px; height: 18px; min-height: 0; flex: none; }
+body[data-theme="warm"] .timeline .time-body { background: #fffaf4; }
+body[data-theme="warm"] .timeline :is(.staff-head, .time-head) { background: #fff2e6; }
+
+.timeline .own-staff-column .staff-head {
+  box-shadow: inset 0 -3px var(--accent);
+  color: var(--accent);
+}
+
+#apptModal .appointment-section {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+#apptModal .appointment-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+#apptModal .appointment-section-head > div { flex: 1 1 260px; }
+#apptModal .appointment-section-head h3 {
+  margin: 0 0 4px;
+  color: var(--text);
+  font-size: clamp(20px, 2.4vw, 22px);
+  line-height: 1.3;
+  font-weight: 750;
+}
+#apptModal .appointment-section-head p {
+  margin: 0;
+  color: #475569;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+#apptModal [data-project-picker] { display: grid; gap: 8px; min-width: 0; }
+#apptModal .project-pick-row { display: flex; gap: 8px; min-width: 0; }
+#apptModal .project-pick-toggle {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#apptModal .project-pick-toggle::after { content: " ▾"; }
+#apptModal .project-pick-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 152px), 1fr));
+  gap: 6px;
+  max-height: 230px;
+  overflow: auto;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+#apptModal .project-pick-menu strong { grid-column: 1 / -1; }
+#apptModal .project-pick-menu .btn { white-space: normal; overflow-wrap: anywhere; }
+#apptModal .project-pick-together { display: flex; gap: 8px; align-items: center; }
+#apptModal .project-pick-together input { width: 18px; min-height: 0; flex: none; }
+#apptModal .project-pick-remark { display: flex; flex-wrap: wrap; gap: 4px 8px; overflow-wrap: anywhere; }
+#apptModal .batch-project { grid-column: 1 / -1; min-width: 0; }
+
+/* Keep intrinsic sizes of restored project names and time inputs inside their panel. */
+body[data-app-page="schedule"] :is(.workspace, .board, .side, .side > .panel) {
+  min-width: 0;
+}
+body[data-app-page="schedule"] .timeline-wrap { max-width: 100%; }
+.timeline .appt .buffer-band { bottom: auto; }
+.timeline .appt-compact { padding: 3px 5px; }
+.timeline .appt-compact :is(.aduration, .anote) { display: none; }
+.timeline .appt-compact .aname { margin: 0; }
+
+#apptModal :is(.form-grid, .batch-rows, .batch-row, .field, .appointment-staff-picker) {
+  min-width: 0;
+}
+#apptModal .appointment-staff-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#apptModal .appointment-staff-picker select { flex: 1 1 150px; min-width: 0; width: 0; }
+#apptModal .appointment-staff-picker .btn { flex: 0 0 auto; }
+#apptModal #apptAutoStatus { margin-top: 4px; }
+#apptModal .batch-row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: start;
+}
+#apptModal .batch-row :is(input, select) { max-width: 100%; }
+#apptModal .batch-row .field:first-child { grid-column: auto; }
+#apptModal [data-remove-guest] { grid-column: 1 / -1; justify-self: end; }
+#apptModal [data-project-picker] {
+  padding: 10px;
+  border: 1px solid #ccd8ed;
+  border-radius: 10px;
+  background: #f6f8fe;
+  color: #243a60;
+}
+#apptModal [data-project-picker] .btn {
+  min-width: 0;
+  min-height: 40px;
+  margin: 0;
+  border: 1px solid #b8c9e5;
+  background: #fff;
+  color: #244b7a;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+#apptModal [data-project-picker] .project-pick-toggle {
+  border-color: #a9bee3;
+  background: #eaf1fd;
+  color: #193d71;
+  font-weight: 700;
+}
+#apptModal [data-project-picker] .btn[aria-expanded="true"],
+#apptModal [data-project-picker] .btn:hover { background: #dce9fc; }
+#apptModal [data-project-picker] .btn:disabled { opacity: .65; }
+#apptModal .project-pick-together { flex-wrap: nowrap; }
+#apptModal .project-pick-remark output { min-width: 0; }
+
+@media (max-width: 640px) {
+  #apptModal .batch-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #apptModal .batch-row .field:first-child { grid-column: 1 / -1; }
+  #apptModal [data-project-picker] .btn { min-height: 44px; }
+}
+.timeline .appt .buffer-band { z-index: 0; }
+.timeline .appt > :not(.buffer-band) { position: relative; z-index: 1; }
+#apptModal .appointment-highlight > label {
+  display: inline-block;
+  color: #254781;
+  font-weight: 780;
+}
+#apptModal .appointment-highlight > :is(input:not([type="hidden"]), .customer-row > *) {
+  background: #eef4ff;
+  border-color: #9ab4de;
+}
+#apptModal .appointment-highlight :is(input, select, button):focus-visible {
+  outline: 2px solid #315ca8;
+  outline-offset: 2px;
+}
+.timeline { position: relative; }
+.timeline .handoff-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 7;
+  overflow: hidden;
+  pointer-events: none;
+}
+.timeline .handoff-links path { fill: none; stroke-width: 2.5; stroke-linejoin: round; }
+.timeline :is(.staff-head, .time-head) { z-index: 9; }
+#handoffChoice {
+  width: min(440px, calc(100% - 24px));
+  padding: 20px;
+  border: 1px solid #b8c9e5;
+  border-radius: 14px;
+  color: #22334f;
+}
+#handoffChoice::backdrop { background: #172a515e; }
+.handoff-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.handoff-actions .btn { min-height: 44px; }
+
+#availabilityPanel {
+  --available-seat: #146e43;
+  --occupied-seat: #b82d3e;
+  --rest-seat: #dbe2ec;
+  box-sizing: border-box; position: fixed; inset: 0 0 0 auto; margin: 0;
+  width: min(780px, 100%); max-width: 100%; height: 100%; max-height: 100%;
+  padding: clamp(12px, 2vw, 26px); border: 0; color: #192846;
+  background: #fff; box-shadow: -8px 0 40px #16264733; overflow: hidden;
+}
+#availabilityPanel[open] { display: flex; flex-direction: column; gap: 8px; }
+#availabilityPanel::backdrop { background: #23365b33; }
+#availabilityPanel header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+#availabilityPanel :is(h2,p) { margin: 0; }
+#availabilityPanel details { max-height: 34%; overflow: auto; }
+#availabilityPanel summary { cursor: pointer; color: #3846a2; }
+.availability-settings { display: grid; grid-template-columns: repeat(auto-fit,minmax(126px,1fr)); gap: 8px; margin: 8px 0; }
+.availability-settings label { display: grid; gap: 3px; min-width: 0; }
+.availability-settings :is(input,select) { width: 100%; min-width: 0; font: inherit; }
+.availability-legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: .88rem; }
+.availability-legend span::before { content: ''; display: inline-block; width: 12px; height: 12px; margin-right: 4px; border-radius: 3px; background: var(--available-seat); }
+.availability-legend span:nth-child(2)::before { background: var(--occupied-seat); }
+.availability-legend span:nth-child(3)::before { background: var(--rest-seat); }
+#availabilityGrid { flex: 1; min-height: 0; overflow: auto; border: 1px solid #dbe4f1; border-radius: 10px; }
+.availability-table { display: grid; grid-template-columns: 60px repeat(var(--columns),minmax(var(--column-width),1fr)); width: max(100%,calc(60px + var(--columns)*var(--column-width))); }
+.availability-table strong { display: block; text-align: center; position: sticky; top: 0; z-index: 2; background: #f4f6fc; padding: 8px 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.availability-axis { position: sticky; left: 0; z-index: 3; background: #f4f6fc; }
+.availability-day { height: var(--day-height); position: relative; background: var(--rest-seat); border-right: 1px solid #fff; }
+.availability-axis .availability-day { background: #f4f6fc; }
+.availability-hour { position: absolute; right: 6px; color: #526681; font-variant-numeric: tabular-nums; }
+.availability-person .availability-day > :is(div,button) { position: absolute; }
+.availability-work,.availability-line { left: 0; right: 0; }
+.availability-work { background: #fbfcfd; }
+.availability-line { border-top: 1px solid #dbe4f1; pointer-events: none; }
+/* Inset only the paint. Each outer box keeps its exact position on the time axis. */
+.availability-seat {
+  inset-inline: 7px; isolation: isolate; display: grid; place-items: center;
+  margin: 0; border: 0; padding: 0; overflow: hidden; background: transparent;
+  color: #fff; font: inherit; font-size: .85rem; font-weight: 700;
+}
+.availability-seat::before {
+  content: ''; position: absolute; inset: min(3px, 12%) 0;
+  z-index: -1; border-radius: 6px; background: var(--seat-color);
+  box-shadow: inset 0 -2px 0 #0003;
+}
+.availability-busy { --seat-color: var(--occupied-seat); pointer-events: none; }
+.availability-rest-label { position: absolute; width: 100%; top: 12px; text-align: center; color: #526681; font-size: .85rem; }
+.availability-slot { --seat-color: var(--available-seat); cursor: pointer; font-variant-numeric: tabular-nums; }
+.availability-slot:hover { --seat-color: #0f5635; }
+.availability-slot:focus-visible { outline: 2px solid #1e3a8a; outline-offset: -2px; }
+.availability-slot span { max-width: 100%; white-space: nowrap; }
+.availability-located .staff-head { background: #d7f4e6; }
+.rest-rule-options { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.rest-rule-card { padding: 10px; margin: 8px 0; border: 1px solid var(--line); border-radius: 8px; }
+.rest-rule-card fieldset { border: 1px solid var(--line); margin: 6px 0; border-radius: 5px; }
+.rest-rule-settings :is(input,button),.rest-rule-card :is(input,button) { max-width: 100%; }
+@media (max-width: 640px) {
+  .availability-seat { inset-inline: 5px; }
+  #availabilityPanel { inset: auto 0 0; height: 90vh; height: 90dvh; border-radius: 16px 16px 0 0; padding-bottom: max(12px,env(safe-area-inset-bottom)); }
+}
+
+#apptModal .appointment-highlight [data-project-picker] {
+  border: 1px solid #edbfc6;
+  border-inline-start: 4px solid #b82d3e;
+  background: #fff7f8;
+}
+#apptModal .batch-row {
+  --companion-line: #3861ac;
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--companion-line);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fbfcff;
+}
+#apptModal .batch-row:nth-child(3n+2) { --companion-line: #7852a2; }
+#apptModal .batch-row:nth-child(3n+3) { --companion-line: #147765; }
+#apptModal .batch-row + .batch-row { margin-top: 10px; }
+
+#availabilityGrid {
+  touch-action: pan-x pan-y;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 640px) {
+  #availabilityHeader {
+    position: relative;
+    padding-top: 11px;
+    touch-action: none;
+    flex-shrink: 0;
+  }
+  #availabilityHeader::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: calc(50% - 18px);
+    width: 36px;
+    height: 4px;
+    border-radius: 3px;
+    background: #8190a8;
+  }
+  #availabilityClose { min-height: 44px; }
+  #availabilityPanel details { min-height: 25px; }
+  #availabilityPanel .availability-settings :is(input,select) { min-height: 38px; }
+}
+
+#apptModal .member-choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#apptModal .member-choice legend { margin-bottom: 5px; color: #354361; font-weight: 700; }
+#apptModal .member-choice label {
+  position: relative;
+  display: flex;
+  flex: 1 1 110px;
+  min-width: 0;
+  margin: 0;
+}
+#apptModal .member-choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+#apptModal .member-choice label > span {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 42px;
+  padding: 4px 8px;
+  border: 1px solid #a8adc1;
+  border-radius: 8px;
+  cursor: pointer;
+}
+#apptModal .member-choice input:checked + span { background: #f0e7ff; border-color: #7539b7; color: #54268a; }
+#apptModal .member-choice input:focus-visible + span { outline: 2px solid #573090; outline-offset: 2px; }
+#apptModal .member-choice input:disabled + span { cursor: default; opacity: .7; }
+#apptModal .temporary-overtime-row {
+  margin-block: 12px;
+  padding: 10px 12px;
+  border-block: 1px solid #dce2ef;
+}
+#apptModal .temporary-overtime-row label,
+#apptModal .guest-booking-flag { display: flex; align-items: center; gap: 8px; min-height: 42px; margin: 0; }
+#apptModal .temporary-overtime-row p { margin: 2px 0; }
+#apptModal input[role="switch"] {
+  appearance: none;
+  flex: none;
+  width: 42px;
+  height: 25px;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #666b7c;
+  border-radius: 20px;
+  background: radial-gradient(circle at 11px center,#fff 7px,transparent 7.5px),#74798a;
+}
+#apptModal input[role="switch"]:checked {
+  border-color: #4e298a;
+  background: radial-gradient(circle at 29px center,#fff 7px,transparent 7.5px),#6841a4;
+}
+#apptModal input[role="switch"]:focus-visible { outline: 2px solid #4e298a; outline-offset: 2px; }
+.timeline .appt {
+  background-color: var(--customer-bg, var(--panel));
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-inline-start: 8px solid var(--customer-line, var(--accent));
+  border-radius: 8px;
+  box-shadow: 0 1px 3px #22365014;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+/* Keep the main text area light and retain the waiting hatching above the fill. */
+.timeline .appt[data-card-pattern="corner"] {
+  background-image: radial-gradient(ellipse 125px 90px at 100% 0, var(--customer-shade), transparent);
+}
+.timeline .appt[data-card-pattern="gradient"] {
+  background-image: linear-gradient(148deg, transparent 36%, var(--customer-shade));
+}
+@media (max-width: 640px) {
+  .timeline .appt { border-inline-start-width: 6px; }
+}
+.timeline .appt.conflict { box-shadow: 0 0 0 2px #ef444440; }
+.timeline .appt .atime { font-size: 12px; line-height: 1.2; white-space: nowrap; }
+.timeline .appt .aname {
+  max-height: 2.4em;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  overflow: hidden;
+}
+.timeline .appt :is(.acustomer,.appt-flags) { line-height: 1.25; }
+.timeline .appt-compact .aname { max-height: 1.2em; }
+.timeline .appt-short .aname { max-height: 1.2em; }
+.timeline .appt:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.timeline .appt-short .appt-flags { display: none; }
+.appt-flags { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 2px; }
+.appt-flags :is(.appt-member-badge,.appt-rest-badge,.overtime-mark) {
+  margin: 0;
+  padding: 0 3px;
+  border: 1px solid #a9b7c7;
+  border-radius: 4px;
+  color: #374d65;
+  background: var(--panel);
+  font-size: 11px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.appt-flags :is(.appt-rest-badge,.overtime-mark) { border-color: #a99679; color: #765522; }
+
+.availability-slot.availability-closing { --seat-color: #855414; }
+.availability-slot.availability-closing:hover { --seat-color: #683f0b; }
+.availability-legend .availability-closing-legend::before { background: #855414; }
+
+.timeline .companion-links {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.timeline .companion-links path { fill: none; stroke-width: 2; stroke-linejoin: round; }
+.appt-flags .appt-role-badge {
+  border: 1px solid #a9b7c7; border-radius: 4px; padding: 0 3px; font-size: 11px;
+  color: #374d65; background: var(--panel); white-space: nowrap;
+}
+.appt-flags .appt-member-badge {
+  display: inline-flex; align-items: center; gap: 3px; padding: 0 4px;
+  color: #17498d; border-color: #9ebef0; background: #dcebff; font-weight: 750;
+}
+.appt-member-badge i {
+  width: 10px; height: 10px; border: 1px solid currentColor; border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%,currentColor 1px,transparent 1.6px),
+              radial-gradient(ellipse at 50% 100%,currentColor 2px,transparent 2.6px);
+}
+@media (max-width:640px) {
+  .timeline .companion-links path { stroke-dasharray: 2 3; stroke-linecap: round; }
+  .timeline .appt.appt-wrap-title .aname { max-height: 2.4em; }
+  .appt-flags { gap: 2px; }
+  .appt-flags .appt-member-badge { padding-inline: 3px; }
+}
+
+#apptModal[data-rest="true"] [data-service-appointment],
+#apptModal[data-rest="true"] #apptAutoAssign { display: none; }
+.timeline .appt.appt-rest-block {
+  --customer-line: #64748b;
+  background: repeating-linear-gradient(135deg,#edf1f5 0 6px,#e1e7ee 6px 11px);
+  color: #33465b;
+}
+.availability-seat.availability-break { --seat-color: var(--rest-seat); color: #33465b; }

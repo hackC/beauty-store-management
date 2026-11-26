@@ -1,0 +1,12 @@
+{
+  "port": 8000,
+  "domain": "ku.home.arpa",
+  "https": true,
+  "auto_backup": true,
+  "backup_time": "18:00",
+  "backup_keep_days": 30,
+  "backup_dir": "data/backups",
+  "purchase_dir": "data/purchase",
+  "auto_start": true,
+  "default_threshold": 5
+}

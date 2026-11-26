@@ -1,0 +1,43 @@
+"""Small structural interfaces. No web framework, database, or main imports."""
+from __future__ import annotations
+
+from typing import Mapping, Protocol
+
+from .domain import GroupGrant, PermissionInfo, RoutePolicy
+
+
+class PermissionRegistry(Protocol):
+    def register_module(self, namespace: str, label: str, actions: Mapping[str, str],
+                        *, admin_only: tuple[str, ...] = ()) -> tuple[str, ...]: ...
+    def permission_info(self, key: str) -> PermissionInfo | None: ...
+    def all_permissions(self) -> tuple[PermissionInfo, ...]: ...
+    def bind_route(self, namespace: str, method: str, path_template: str,
+                   actions: tuple[str, ...] | list[str] | str, *, mode: str = 'all') -> None: ...
+    def route_policy(self, method: str, path: str) -> RoutePolicy | None: ...
+    def module_catalog(self) -> list[dict]: ...
+
+
+class GroupGrantRepository(Protocol):
+    def for_user(self, user_id: str) -> tuple[GroupGrant, ...]:
+        """Read current grants on each call; membership changes must not be cached."""
+        ...
+
+
+class PermissionChecks(Protocol):
+    def granted(self, user: Mapping | None, key: str) -> bool: ...
+    def check(self, user: Mapping | None, keys: tuple[str, ...] | list[str],
+              *, mode: str = 'all') -> dict: ...
+    def catalog(self) -> dict: ...
+    def snapshot(self, user: Mapping) -> dict: ...
+
+
+class PermissionRegistration(Protocol):
+    def register_module(self, namespace: str, label: str, actions: Mapping[str, str],
+                        *, admin_only: tuple[str, ...] = ()) -> tuple[str, ...]: ...
+    def register_route(self, namespace: str, method: str, path: str,
+                       actions: tuple[str, ...] | list[str] | str, *, mode: str = 'all') -> None: ...
+
+
+class ModulePermissions(PermissionChecks, PermissionRegistration, Protocol):
+    """Trusted extension installation contract, supplied by the composition root."""
+

@@ -1,0 +1,5554 @@
+
+<!doctype html>
+<html lang="zh-CN" class="app-viewport">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#173f68">
+<title>门店管理系统</title>
+
+<style>
+:root {
+    --nav: #173f68;
+    --nav2: #245b8d;
+    --bg: #f3f6fa;
+    --card: #fff;
+    --text: #1e293b;
+    --muted: #718096;
+    --line: #e5eaf0;
+    --blue: #2f6fae;
+    --green: #15966b;
+    --orange: #d97706;
+    --red: #dc4c4c;
+    --shadow: 0 4px 18px #183b5b0c;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.shell {
+    height: 100vh;
+    display: flex;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 228px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--nav), #102d4c);
+    color: #fff;
+    padding: 22px 14px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.brand {
+    font-size: 18px;
+    font-weight: 750;
+    padding: 0 10px 6px;
+}
+
+.brand-sub {
+    font-size: 11px;
+    color: #b7cbe0;
+    padding: 0 10px 24px;
+}
+
+.nav button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: #d7e5f3;
+    text-align: left;
+    padding: 12px 13px;
+    border-radius: 9px;
+    margin: 2px 0;
+    font-size: 14px;
+}
+
+.nav button.active,
+.nav button:hover {
+    background: #ffffff1c;
+    color: #fff;
+}
+
+.nav button[hidden] {
+    display: none;
+}
+
+.nav .group {
+    font-size: 11px;
+    color: #91abc4;
+    padding: 18px 12px 5px;
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top {
+    height: 66px;
+    flex: 0 0 66px;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    z-index: 5;
+}
+
+.top h1 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status {
+    font-size: 12px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    display: inline-block;
+}
+
+.content {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 24px 28px;
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.page-head h2 {
+    font-size: 20px;
+    margin: 0;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.card,
+.panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    box-shadow: var(--shadow);
+}
+
+.stat {
+    padding: 18px 20px;
+}
+
+.stat .label {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.stat .num {
+    font-size: 30px;
+    font-weight: 750;
+    margin-top: 8px;
+}
+
+.stat .hint {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.panel {
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.panel-title {
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    color: #334155;
+    border-radius: 8px;
+    padding: 9px 13px;
+    font-size: 13px;
+}
+
+.btn:hover {
+    border-color: #9ab5d0;
+    background: #f7fbff;
+}
+
+.btn.primary {
+    background: var(--blue);
+    border-color: var(--blue);
+    color: #fff;
+}
+
+.btn.danger {
+    color: var(--red);
+}
+
+.btn.small {
+    padding: 6px 9px;
+    font-size: 12px;
+}
+
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+.toolbar {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.field,
+select,
+textarea {
+    border: 1px solid #dce3eb;
+    border-radius: 8px;
+    padding: 9px 11px;
+    background: #fff;
+    color: var(--text);
+    min-width: 0;
+}
+
+.field:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #bfdbfe;
+    border-color: #70a5d5;
+}
+
+.toolbar .field {
+    min-width: 180px;
+}
+
+.table-wrap {
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 760px;
+    background: #fff;
+}
+
+th,
+td {
+    padding: 11px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+th {
+    background: #f6f8fb;
+    color: #526174;
+    font-weight: 650;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+tbody tr:hover {
+    background: #f8fbff;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    background: #edf2f7;
+    color: #64748b;
+}
+
+.tag.ok {
+    background: #e7f7ef;
+    color: #14845b;
+}
+
+.tag.warn {
+    background: #fff4df;
+    color: #b76a09;
+}
+
+.tag.bad {
+    background: #ffeded;
+    color: #c43d3d;
+}
+
+.empty {
+    text-align: center;
+    padding: 35px;
+    color: var(--muted);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.form-item label {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.form-item .field,
+.form-item select {
+    width: 100%;
+}
+
+.op-head {
+    display: grid;
+    grid-template-columns: 1.1fr 1.3fr 1.1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.op-table-head,
+.op-row {
+    display: grid;
+    grid-template-columns:
+        minmax(320px, 2.2fr)
+        minmax(95px, .85fr)
+        minmax(90px, .8fr)
+        minmax(140px, 1.2fr)
+        minmax(100px, .9fr)
+        minmax(115px, .9fr)
+        minmax(90px, .7fr)
+        minmax(65px, .55fr)
+        minmax(120px, 1fr)
+        42px;
+    gap: 7px;
+    align-items: center;
+    min-width: 1230px;
+}
+
+.op-table-head {
+    padding: 9px 7px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 650;
+    border-bottom: 1px solid var(--line);
+}
+
+#opRows {
+    overflow-x: auto;
+    padding: 8px 0 5px;
+}
+
+.op-row {
+    margin-bottom: 8px;
+}
+
+.op-row .field {
+    width: 100%;
+    min-width: 0;
+}
+
+.op-row .readonly {
+    background: #f4f7fa;
+    color: #526174;
+}
+
+.op-search-wrap {
+    position: relative;
+    min-width: 0;
+}
+
+.op-suggestions {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    max-height: min(52vh, 480px);
+    min-width: min(320px, 82vw);
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #dce3eb;
+    border-radius: 9px;
+    box-shadow: 0 10px 28px #183b5b22;
+    z-index: 30;
+}
+
+.op-suggestions.show {
+    display: block;
+}
+
+.op-suggestion {
+    padding: 13px 14px;
+    border-bottom: 1px solid #edf0f4;
+    cursor: pointer;
+    white-space: normal;
+}
+
+.op-suggestion:hover,
+.op-suggestion.active {
+    background: #eef6ff;
+}
+
+.op-suggestion strong {
+    display: block;
+    font-size: 14px;
+}
+
+.op-suggestion small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.notice {
+    padding: 12px 14px;
+    border-radius: 9px;
+    background: #eef6ff;
+    color: #315b80;
+    font-size: 12px;
+    margin-bottom: 14px;
+}
+
+.danger-note {
+    background: #fff7ed;
+    color: #9a5b15;
+}
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: #10263c88;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 50;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(760px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.mobile-menu {
+    display: none;
+}
+
+.footer-note {
+    font-size: 11px;
+    color: #8a98a8;
+    margin-top: 18px;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.setting-card {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+.setting-card h3 {
+    font-size: 14px;
+    margin: 0 0 12px;
+}
+
+.setting-card .form-item {
+    margin: 10px 0;
+}
+
+.link {
+    color: #2563a6;
+    text-decoration: none;
+}
+
+.row-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.permission-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.permission-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.auth-gate {
+    position: fixed;
+    inset: 0;
+    background: #edf2f7;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.auth-gate.show {
+    display: flex;
+}
+
+.auth-card {
+    width: min(430px, 100%);
+    background: #fff;
+    padding: 26px;
+    border-radius: 16px;
+    box-shadow: 0 12px 45px #183b5b18;
+}
+
+.auth-card h2 {
+    margin: 0 0 8px;
+}
+
+.auth-card .form-item {
+    margin: 14px 0;
+}
+
+.auth-card .field {
+    width: 100%;
+}
+
+.auth-error {
+    color: var(--red);
+    min-height: 20px;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.mobile-nav {
+    display: none;
+}
+
+.mobile-overlay {
+    display: none;
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 9px;
+    display: none;
+    z-index: 90;
+    max-width: 90%;
+    font-size: 13px;
+}
+
+@media(max-width:1000px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        padding: 18px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media(max-width:640px) {
+    html,
+    body {
+        height: auto;
+        min-height: 100%;
+        overflow: auto;
+    }
+
+    .shell {
+        height: auto;
+        min-height: 100vh;
+        display: block;
+        overflow: visible;
+    }
+
+    .sidebar {
+        display: block;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 260px;
+        height: 100dvh;
+        z-index: 60;
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+        box-shadow: 12px 0 35px #10263c30;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .mobile-overlay.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: #10263c66;
+        z-index: 55;
+    }
+
+    .main {
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .top {
+        height: 58px;
+        flex-basis: 58px;
+        padding: 0 14px;
+        position: sticky;
+        top: 0;
+    }
+
+    .top h1 {
+        font-size: 16px;
+    }
+
+    .mobile-menu {
+        display: inline-block;
+    }
+
+    .content {
+        overflow: visible;
+        padding: 14px 12px 86px;
+    }
+
+    .cards {
+        gap: 9px;
+    }
+
+    .stat {
+        padding: 14px;
+    }
+
+    .stat .num {
+        font-size: 24px;
+    }
+
+    .stat .label {
+        font-size: 11px;
+    }
+
+    .page-head {
+        align-items: flex-start;
+    }
+
+    .page-head h2 {
+        font-size: 18px;
+    }
+
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-top: 1px solid var(--line);
+        z-index: 40;
+        justify-content: space-around;
+        padding: 7px 2px calc(7px + env(safe-area-inset-bottom));
+    }
+
+    .mobile-nav button {
+        border: 0;
+        background: none;
+        color: #64748b;
+        font-size: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 4px;
+    }
+
+    .mobile-nav button.active {
+        color: var(--blue);
+        font-weight: 700;
+    }
+
+    .mobile-nav span {
+        font-size: 18px;
+    }
+
+    .form-grid,
+    .settings-grid,
+    .permission-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .op-head {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .op-table-head,
+    .op-row {
+        min-width: 1230px;
+    }
+
+    .toolbar .field {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .toolbar select {
+        flex: 1;
+    }
+
+    .panel {
+        padding: 13px;
+    }
+
+    .status {
+        font-size: 0;
+    }
+
+    .status .dot {
+        width: 9px;
+        height: 9px;
+    }
+
+    .page-head .btn {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .modal-box {
+        padding: 16px;
+    }
+}
+
+
+/* V1.5.0 mobile-first refinement: small-store daily workflows */
+@media (max-width: 640px) {
+    html, body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        overscroll-behavior-x: none;
+    }
+
+    .shell {
+        width: 100%;
+        min-width: 0;
+        padding-bottom: calc(66px + env(safe-area-inset-bottom));
+    }
+
+    .main, .content, .page, .panel, .card {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .top {
+        min-height: 58px;
+        height: auto;
+        flex-basis: auto;
+        gap: 8px;
+        padding: 8px 12px;
+        align-items: center;
+    }
+
+    .top h1 {
+        font-size: 16px;
+        line-height: 1.25;
+    }
+
+    .top-right {
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .top-right .muted {
+        display: none;
+    }
+
+    .top-right .btn {
+        min-height: 40px;
+        padding: 7px 9px;
+    }
+
+    .content {
+        padding: 14px 10px calc(88px + env(safe-area-inset-bottom));
+    }
+
+    .page-head {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .page-head h2 {
+        font-size: 18px;
+    }
+
+    .page-head > .btn {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .stat {
+        padding: 12px;
+        min-width: 0;
+    }
+
+    .stat .num {
+        font-size: 23px;
+        overflow-wrap: anywhere;
+    }
+
+    .panel {
+        padding: 12px;
+        border-radius: 11px;
+    }
+
+    .panel-title {
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .form-grid,
+    .settings-grid,
+    .permission-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 11px;
+    }
+
+    .form-item label {
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .field,
+    select,
+    textarea,
+    .form-item .field,
+    .form-item select {
+        width: 100%;
+        min-width: 0;
+        min-height: 46px;
+        padding: 10px 12px;
+        font-size: 16px;
+        border-radius: 9px;
+    }
+
+    textarea {
+        min-height: 88px;
+    }
+
+    .btn {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 14px;
+        touch-action: manipulation;
+    }
+
+    .btn.small {
+        min-height: 40px;
+        padding: 8px 10px;
+    }
+
+    .toolbar {
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .toolbar > *,
+    .toolbar .field,
+    .toolbar select {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .toolbar > .field,
+    .toolbar > select {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .toolbar > div {
+        min-width: 0 !important;
+        max-width: 100%;
+    }
+
+    .table-wrap {
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+    }
+
+    .mobile-card-table-wrap {
+        overflow: visible;
+        border: 0;
+    }
+
+    .mobile-card-table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: transparent;
+    }
+
+    .mobile-card-table thead {
+        display: none;
+    }
+
+    .mobile-card-table tbody {
+        display: grid;
+        gap: 10px;
+        padding: 2px 0;
+    }
+
+    .mobile-card-table tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        min-width: 0;
+        padding: 11px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fff;
+        box-shadow: 0 2px 8px #183b5b08;
+    }
+
+    .mobile-card-table td {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+
+    .mobile-card-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+    .mobile-card-table td[colspan] {
+        display: block;
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 12px 4px;
+    }
+
+    .mobile-card-table td:nth-child(1),
+    .mobile-card-table td:nth-child(4),
+    .mobile-card-table td:nth-child(7),
+    .mobile-card-table td:nth-child(12),
+    .mobile-card-table td:nth-child(13) {
+        grid-column: 1 / -1;
+    }
+
+    .mobile-card-table .row-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+    }
+
+    .mobile-card-table .row-actions .btn {
+        flex: 1 1 90px;
+    }
+
+    .purchase-table td:nth-child(1),
+    .purchase-table td:nth-child(3),
+    .purchase-table td:nth-child(9) {
+        grid-column: 1 / -1;
+    }
+
+    .purchase-table td:nth-child(4),
+    .purchase-table td:nth-child(7) {
+        grid-column: auto;
+    }
+
+    .op-head {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+    }
+
+    .op-table-head {
+        display: none;
+    }
+
+    #opRows {
+        overflow: visible;
+        padding-top: 4px;
+    }
+
+    .op-row {
+        position: relative;
+        min-width: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 9px;
+        padding: 11px;
+        margin-bottom: 11px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: #fbfdff;
+        box-shadow: 0 2px 8px #183b5b08;
+    }
+
+    .op-row .op-search-wrap,
+    .op-row .op-name {
+        grid-column: 1 / -1;
+    }
+
+    .op-row .op-search-wrap > div {
+        gap: 7px !important;
+    }
+
+    .op-row .op-search-wrap .btn {
+        flex: 0 0 48px;
+        min-width: 48px;
+    }
+
+    .op-row .field {
+        min-width: 0;
+        min-height: 44px;
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .op-row .btn.danger {
+        grid-column: 1 / -1;
+        width: 100%;
+        min-height: 42px;
+    }
+
+    .op-suggestions {
+        left: 0;
+        right: 0;
+        min-width: 0;
+        width: 100%;
+        max-height: 42dvh;
+    }
+
+    .mobile-nav {
+        display: flex;
+        justify-content: flex-start;
+        gap: 2px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 6px 7px calc(6px + env(safe-area-inset-bottom));
+        padding-left: max(7px, env(safe-area-inset-left));
+        padding-right: max(7px, env(safe-area-inset-right));
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-x: contain;
+        scrollbar-width: none;
+    }
+
+    .mobile-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-nav button {
+        flex: 0 0 44px;
+        min-width: 44px;
+        min-height: 48px;
+        padding: 4px 2px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .mobile-nav span {
+        font-size: 19px;
+        line-height: 1.15;
+    }
+
+    .modal {
+        align-items: flex-end;
+        padding: 0;
+        padding-top: env(safe-area-inset-top);
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 100%;
+        max-height: min(92dvh, calc(100dvh - env(safe-area-inset-top)));
+        padding: 15px 14px calc(16px + env(safe-area-inset-bottom));
+        border-radius: 18px 18px 0 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scroll-padding-bottom: 120px;
+    }
+
+    .modal-box .page-head {
+        position: sticky;
+        top: -15px;
+        z-index: 3;
+        flex-direction: row;
+        align-items: center;
+        margin: -15px -14px 14px;
+        padding: 13px 14px 10px;
+        background: #fff;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .modal-box .page-head > .btn {
+        width: auto;
+        min-width: 42px;
+    }
+
+    .modal-actions {
+        position: sticky;
+        bottom: -16px;
+        z-index: 2;
+        background: #fff;
+        padding: 10px 0 calc(3px + env(safe-area-inset-bottom));
+        margin-top: 14px;
+    }
+
+    .modal-actions .btn {
+        flex: 1;
+    }
+
+    .auth-gate {
+        align-items: center;
+        padding: 12px;
+        padding-top: max(12px, env(safe-area-inset-top));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+
+    .auth-card {
+        padding: 20px;
+        max-height: 92dvh;
+        overflow-y: auto;
+    }
+
+    .notice {
+        line-height: 1.6;
+    }
+
+    input, select, textarea, button {
+        scroll-margin-bottom: 120px;
+    }
+}
+
+
+/* Camera aiming overlay does not intercept touches. */
+.barcode-video-wrap {position:relative;min-height:120px;background:#111;border-radius:12px;overflow:hidden;}
+.barcode-video-wrap video {display:block;}
+.barcode-aim {pointer-events:none;position:absolute;left:8%;right:8%;top:30%;height:40%;max-height:125px;border:2px dashed #cdf3ff;border-radius:10px;box-shadow:0 0 0 100vh #0003;}
+/* V1.5.0 second mobile pass: aligned forms & equal-height information cells. */
+@media(max-width:640px) {
+  .op-head { grid-template-columns:repeat(2,minmax(0,1fr)); align-items:stretch; gap:10px; }
+  .op-head .form-item { display:flex;flex-direction:column;min-width:0;align-self:stretch;margin:0; }
+  .op-head .form-item label { min-height:36px;display:flex;align-items:flex-end;line-height:1.35;margin-bottom:5px; }
+  .op-head .form-item .field { width:100%;min-width:0;min-height:46px;height:46px;box-sizing:border-box;font-size:16px; }
+  .mobile-card-table tr { grid-auto-rows:minmax(68px,auto);align-items:stretch; }
+  .mobile-card-table td:not([colspan]) { min-height:68px;justify-content:flex-start;padding:8px 9px;border:1px solid #edf0f5;background:#fafcfe;border-radius:8px; }
+  .mobile-card-table td::before { min-height:17px;line-height:17px;flex:none; }
+  .mobile-card-table td:nth-child(12),.mobile-card-table td:nth-child(13) { min-height:0; }
+  .purchase-table tr { grid-auto-rows:minmax(68px,auto); }
+  .op-row .op-location { grid-column:auto; }
+}
+.permission-group-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px;}
+.permission-group-card {min-width:0;padding:14px;border:1px solid var(--line);border-radius:12px;background:#fcfdff;}
+.permission-group-card.drag-over {border:2px dashed #4585ca;background:#eaf4ff;}
+.permission-group-head,.permission-group-actions,.permission-group-assign {display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+.permission-group-head small {color:var(--muted);}
+.permission-group-members,.permission-user-pool {display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;min-height:46px;}
+.permission-user-chip,.permission-member-pill {display:inline-flex;align-items:center;gap:6px;border-radius:18px;border:1px solid #d8e3f2;background:#fff;padding:6px 10px;font-size:13px;}
+.permission-user-chip {cursor:grab;}.permission-user-chip small {font-size:11px;color:var(--muted);}
+.permission-member-pill button {border:0;background:transparent;font-size:18px;cursor:pointer;color:#a34444;}
+.permission-group-assign {flex-wrap:nowrap;}.permission-group-assign select {flex:1;min-width:0;min-height:42px;}
+.permission-group-actions {justify-content:flex-end;margin-top:12px;}
+@media(max-width:640px){.permission-group-actions .btn{min-height:44px;}.permission-group-assign .btn{min-height:44px;}}
+
+
+/* V1.5.0 round 3: product photos and fixed home shortcut */
+.product-photo {position:relative;display:inline-flex;width:56px;height:56px;min-width:56px;align-items:center;justify-content:center;border:1px solid #b9c3d0;border-radius:7px;background:#fff;padding:0;vertical-align:middle;overflow:hidden;color:#a7b0be;font-size:24px;line-height:1;cursor:zoom-in;}
+.product-photo img {display:block;width:100%;height:100%;object-fit:cover;}
+.product-photo.placeholder {background:#fff;color:#aeb5bf;}
+.product-photo.placeholder span {font-size:27px;font-weight:300;}
+.product-photo.small {width:44px;height:44px;min-width:44px;}
+.product-photo.large {width:108px;height:108px;min-width:108px;}
+.photo-inline {display:inline-flex;align-items:center;gap:8px;min-width:0;}
+.product-photo-editor {display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:8px 0 16px;}
+.product-photo-actions {display:grid;gap:8px;}
+.product-photo-actions[hidden] {display:none;}
+.product-photo-actions .btn {min-height:44px;}
+#imageViewerModal .modal-box {max-width:640px;text-align:center;}
+#imageViewerDisplay {display:flex;align-items:center;justify-content:center;min-height:220px;}
+#imageViewerDisplay .product-photo {width:min(76vw,490px);height:auto;aspect-ratio:1;cursor:default;}
+#imageViewerDisplay .product-photo img {width:100%;height:100%;}
+@media(max-width:640px) {
+
+ .product-photo {width:52px;height:52px;min-width:52px;}
+ .product-table td:not([colspan]), .purchase-table td:not([colspan]) {grid-column:auto;}
+ .product-table td[data-label="图片"], .purchase-table td[data-label="图片"],
+ .product-table td[data-label="品名"], .purchase-table td[data-label="品名"],
+ .product-table td[data-label="操作"] {grid-column:1 / -1;}
+ .mobile-card-table tr .photo-cell {justify-self:start;}
+ .op-row .product-photo-slot {grid-column:1 / -1;min-height:48px;display:flex;align-items:center;gap:8px;}
+ .op-suggestion .photo-inline {width:100%;}
+ .product-photo-editor .product-photo {width:110px;height:110px;}
+}
+/* Persistent signed-in identity: visible on every inventory page, including narrow phones. */
+.user-badge{display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:5px 10px;border:1px solid #c8d9ea;border-radius:999px;background:#edf5fc;color:#174a78;font-size:12px;font-weight:800;white-space:nowrap;max-width:42vw;overflow:hidden;text-overflow:ellipsis;}
+@media(max-width:640px){.top-right .user-badge{display:inline-flex!important;max-width:38vw;font-size:11px;padding:5px 7px;min-height:32px;}.top-right{flex-wrap:nowrap;gap:5px}.top-right .btn{font-size:11px;padding:6px 7px;min-height:34px}.top-right .status{display:none}}
+
+</style>
+<script defer src="/static/permission_client.js"></script>
+<link rel="stylesheet" href="/static/app_shell.css?v=1.6.0-rc.7">
+<script src="/static/app_shell.js?v=12.6"></script>
+<script src="/static/store_network.js?v=1.6.0-rc.7"></script>
+<script defer src="/static/dev12_ui.js?v=12.2"></script>
+  <link rel="stylesheet" href="/static/dev12_responsive.css?v=12.7">
+</head>
+
+<body data-app-shell="true" data-dev12-ui="true" data-app-page="inventory">
+
+<div class="mobile-overlay" id="mobileOverlay"
+    onclick="toggleMobileMenu(false)"></div>
+
+<div class="shell app-frame">
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand">门店系统</div>
+    <div class="brand-sub">STORE MANAGEMENT</div>
+
+    <nav class="nav" id="sideNav">
+        <div class="group">业务管理</div>
+
+        <button class="active" data-page="home">▦　首页看板</button>
+        <button data-page="operation">⇄　日常登记</button>
+        <button data-page="products">▤　商品档案</button>
+        <button data-page="transactions">☷　库存流水</button>
+        <button data-page="purchase">▣　采购管理</button>
+        <button type="button" data-page="schedule">▦　每日排班</button>
+
+        <div class="group">系统管理</div>
+
+        <button data-page="archive">◷　历史记录</button>
+        <button data-page="settings">⚙　基础设置</button>
+        <button data-page="data">▣　数据备份</button>
+        <button data-page="users" id="userNav" hidden>♙　人员管理</button>
+        <button data-page="controlcenter" id="controlCenterNav" hidden>▣　运营监控中心</button>
+        <button data-page="help">?　使用教程</button>
+    </nav>
+
+    <div class="footer-note"
+        style="color:#91abc4;padding:20px 10px">
+        局域网本地版 · 数据保存在服务器电脑
+    </div>
+</aside>
+
+<main class="main app-main">
+
+<header class="top app-topbar">
+    <div class="app-topbar-left">
+        <button class="btn mobile-menu"
+            onclick="toggleMobileMenu()">☰</button>
+        <h1 id="topTitle">首页看板</h1>
+    </div>
+
+    <div class="top-right app-topbar-actions">
+        <span id="userDisplay" class="muted user-badge" aria-live="polite" title="当前登录账号"></span>
+
+        <button class="btn small" id="notificationButton" onclick="openNotifications()">消息 <span id="notificationCount">0</span></button>
+        <button class="btn small" onclick="logout()">退出</button>
+
+        <div class="status" id="serverStatus">
+            <i class="dot"></i>服务器连接正常
+        </div>
+    </div>
+<div id="notificationPanel" class="app-topbar-panel" style="display:none;width:min(420px,calc(100vw - 28px));max-height:70vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 50px #102d4c30;z-index:80;padding:14px">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px"><b>统一消息中心</b><div><button class="btn small" onclick="markAllNotificationsRead()">全部已读</button><button class="btn small" onclick="closeNotifications()">关闭</button></div></div>
+  <div id="notificationList" class="muted">正在加载消息…</div>
+</div>
+</header>
+
+<div class="content app-scroll">
+
+<!-- 首页看板 -->
+<section class="page" id="page-home">
+    <div class="page-head">
+        <div>
+            <h2>经营概览</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                实时查看门店库存与业务动态
+            </div>
+        </div>
+
+        <button class="btn" onclick="loadAll()">↻ 刷新数据</button>
+    </div>
+
+    <div class="cards">
+        <div class="card stat">
+            <div class="label">商品总数</div>
+            <div class="num" id="sProducts">--</div>
+            <div class="hint">当前启用商品</div>
+        </div>
+
+        <div class="card stat">
+            <div class="label">需要补货</div>
+            <div class="num" id="sLow" style="color:var(--orange)">--</div>
+            <div class="hint">库存达到安全阈值</div>
+        </div>
+
+        <div class="card stat">
+            <div class="label">今日单据</div>
+            <div class="num" id="sDocs">--</div>
+            <div class="hint">成功提交的单据数</div>
+        </div>
+
+        <div class="card stat">
+            <div class="label">今日流水行</div>
+            <div class="num" id="sLines">--</div>
+            <div class="hint">今日库存变动明细</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">
+            近期库存变动
+            <button class="btn small" onclick="go('transactions')">
+                查看全部
+            </button>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>类型</th>
+                        <th>单据号</th>
+                        <th>商品</th>
+                        <th>入库</th>
+                        <th>出库</th>
+                        <th>调整</th>
+                        <th>经办人</th>
+                    </tr>
+                </thead>
+                <tbody id="recentRows"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">
+            待补货商品
+            <button class="btn small" onclick="go('purchase')">
+                进入采购管理
+            </button>
+        </div>
+
+        <div id="lowPreview" class="muted">加载中…</div>
+    </div>
+</section>
+
+
+<!-- 日常登记 -->
+<section class="page" id="page-operation">
+    <div class="page-head">
+        <div>
+            <h2>日常登记</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                入库、出库、盘点统一在此登记
+            </div>
+        </div>
+        <button class="btn primary" type="button" id="mobileScanEntry" onclick="startMobileScan()">📷 手机扫码</button>
+    </div>
+
+    <div class="notice">
+        盘点调整时，数量填写实际盘点数量（允许填 0）；
+        系统自动计算盘盈或盘亏。出库前会自动校验库存。
+        经办人由当前登录账号自动带入。
+    </div>
+
+    <div class="panel">
+        <div class="op-head">
+            <div class="form-item">
+                <label>业务类型</label>
+                <select id="opType" class="field">
+                    <option>入库</option>
+                    <option>出库</option>
+                    <option>盘点调整</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label>外部单据编号（可空）</label>
+                <input id="opDoc" class="field"
+                    placeholder="留空自动生成">
+            </div>
+
+            <div class="form-item">
+                <label>经办人（自动关联登录账号）</label>
+                <input id="opOperator" class="field" readonly
+                    placeholder="登录后自动填充">
+            </div>
+
+            <div class="form-item">
+                <label>单据备注</label>
+                <input id="opNote" class="field"
+                    placeholder="可选">
+            </div>
+        </div>
+
+        <div class="panel-title">
+            <span>商品明细</span>
+            <button class="btn small" onclick="addOpRow()">
+                ＋ 添加商品
+            </button>
+        </div>
+
+        <div class="op-table-head">
+            <span>商品搜索</span>
+            <span>商品 ID</span>
+            <span>品牌</span>
+            <span>品名</span>
+            <span>规格</span>
+            <span>存放位置</span>
+            <span>数量 / 实盘</span>
+            <span>单位</span>
+            <span>备注</span>
+            <span>操作</span>
+        </div>
+
+        <div id="opRows"></div>
+
+        <div style="display:flex;justify-content:space-between;
+            align-items:center;margin-top:16px;gap:8px;flex-wrap:wrap">
+
+            <span class="muted" id="opCount">共 0 条明细</span>
+
+            <div style="display:flex;gap:8px">
+                <button class="btn" onclick="resetOp()">清空</button>
+                <button class="btn primary" id="submitDocButton"
+                    onclick="submitDoc()">提交单据</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- 商品档案 -->
+<section class="page" id="page-products">
+    <div class="page-head">
+        <div>
+            <h2>商品档案</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                维护商品信息、安全阈值和当前库存
+            </div>
+        </div>
+
+        <button class="btn primary" id="addProductButton"
+            onclick="editProduct()">＋ 新增商品</button>
+    </div>
+
+    <div class="panel">
+        <div class="toolbar">
+            <div style="display:flex;gap:6px;min-width:220px;flex:1">
+                <input id="prodSearch" class="field"
+                    placeholder="搜索商品 ID、条码、品牌、品名、规格"
+                    oninput="debounceProducts()" style="flex:1;min-width:0">
+                <button class="btn" type="button" onclick="startBarcodeScan('prodSearch')">📷 扫码查询</button>
+            </div>
+
+            <select id="prodStatus" onchange="loadProducts()">
+                <option value="全部">全部状态</option>
+                <option value="正常">正常</option>
+                <option value="补货">补货</option>
+            </select>
+
+            <select id="prodCategory" onchange="loadProducts()">
+                <option value="全部">全部分类</option>
+            </select>
+
+            <button class="btn" onclick="clearProductFilters()">
+                清空筛选
+            </button>
+
+            <button class="btn" onclick="exportFile('products')">
+                导出 Excel
+            </button>
+        </div>
+
+        <div class="table-wrap mobile-card-table-wrap">
+            <table class="mobile-card-table product-table">
+                <thead>
+                    <tr>
+                        <th>图片</th>
+                        <th>商品 ID</th>
+                        <th>条形码</th>
+                        <th>品牌</th>
+                        <th>品名</th>
+                        <th>规格</th>
+                        <th>分类</th>
+                        <th>存放位置</th>
+                        <th>单位</th>
+                        <th>期初</th>
+                        <th>当前库存</th>
+                        <th>安全阈值</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="productRows"></tbody>
+            </table>
+        </div>
+
+        <div class="muted" id="productCount"
+            style="font-size:12px;margin-top:10px"></div>
+    </div>
+</section>
+
+
+<!-- 库存流水 -->
+<section class="page" id="page-transactions">
+    <div class="page-head">
+        <div>
+            <h2>库存流水</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                所有正式库存变动长期保留，可筛选和导出
+            </div>
+        </div>
+
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn" onclick="exportFile('transactions')">导出全部</button>
+            <button class="btn" onclick="exportFile('transactions','入库')">导出入库</button>
+            <button class="btn" onclick="exportFile('transactions','出库')">导出出库</button>
+            <button class="btn" onclick="exportFile('transactions','盘点调整')">导出盘点</button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="toolbar">
+            <input id="txSearch" class="field"
+                placeholder="搜索商品、单据号、经办人"
+                oninput="loadTransactions()">
+
+            <select id="txType" onchange="loadTransactions()">
+                <option value="全部">全部类型</option>
+                <option value="入库">入库</option>
+                <option value="出库">出库</option>
+                <option value="盘点调整">盘点调整</option>
+            </select>
+
+            <input id="txStart" type="date" class="field"
+                onchange="loadTransactions()">
+
+            <input id="txEnd" type="date" class="field"
+                onchange="loadTransactions()">
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>流水 ID</th>
+                        <th>时间</th>
+                        <th>类型</th>
+                        <th>单据号</th>
+                        <th>商品 ID</th>
+                        <th>品名</th>
+                        <th>入库</th>
+                        <th>出库</th>
+                        <th>调整</th>
+                        <th>经办人</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="txRows"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<!-- 采购管理 -->
+<section class="page" id="page-purchase">
+    <div class="page-head">
+        <div>
+            <h2>采购管理</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                自动识别达到安全库存阈值的商品
+            </div>
+        </div>
+
+        <button class="btn primary"
+            onclick="exportFile('purchase')">
+            导出采购单 Excel
+        </button>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">
+            待补货清单
+            <span class="tag warn" id="purchaseCount">0 项</span>
+        </div>
+
+        <div class="table-wrap mobile-card-table-wrap">
+            <table class="mobile-card-table purchase-table">
+                <thead>
+                    <tr>
+                        <th>图片</th>
+                        <th>商品 ID</th>
+                        <th>品牌</th>
+                        <th>品名</th>
+                        <th>规格</th>
+                        <th>分类</th>
+                        <th>当前库存</th>
+                        <th>安全阈值</th>
+                        <th>差额</th>
+                        <th>存放位置</th>
+                    </tr>
+                </thead>
+                <tbody id="purchaseRows"></tbody>
+            </table>
+        </div>
+
+        <div class="muted" style="font-size:12px;margin-top:10px">
+            补货判断：当前库存小于或等于有效安全阈值。
+        </div>
+    </div>
+</section>
+
+
+<!-- 历史记录 -->
+<section class="page" id="page-archive">
+    <div class="page-head">
+        <div>
+            <h2>历史记录</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                历史流水采用统一查询，不物理删除正式库存记录
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="notice">
+            这里展示完整历史库存流水。数据库备份与历史业务流水分开管理，
+            清理备份不会删除库存账目。
+        </div>
+
+        <div class="toolbar">
+            <input id="hisSearch" class="field"
+                placeholder="搜索历史商品或单据号"
+                oninput="loadHistory()">
+
+            <input id="hisStart" type="date" class="field"
+                onchange="loadHistory()">
+
+            <input id="hisEnd" type="date" class="field"
+                onchange="loadHistory()">
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>时间</th>
+                        <th>类型</th>
+                        <th>单据号</th>
+                        <th>商品 ID</th>
+                        <th>品名</th>
+                        <th>入库</th>
+                        <th>出库</th>
+                        <th>调整</th>
+                        <th>经办人</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="hisRows"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+
+<!-- 基础设置 -->
+<section class="page" id="page-settings">
+    <div class="page-head">
+        <div>
+            <h2>基础设置</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                服务器、域名、备份及库存参数
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="settings-grid">
+
+            <div class="setting-card">
+                <h3>服务器访问</h3>
+
+                <div class="form-item">
+                    <label>访问 IP（留空自动检测）</label>
+                    <input id="setAccessIp" class="field"
+                        placeholder="例如 192.168.1.8">
+                </div>
+
+                <div class="form-item">
+                    <label>服务端口</label>
+                    <input id="setPort" class="field"
+                        type="number" min="1024" max="65535">
+                </div>
+
+                <div class="form-item">
+                    <label>局域网域名</label>
+                    <input id="setDomain" class="field"
+                        placeholder="ku.com">
+                </div>
+
+                <div class="form-item">
+                    <label>HTTPS</label>
+                    <select id="setHttps" class="field">
+                        <option value="false">关闭 HTTPS（默认）</option>
+                        <option value="true">启用 HTTPS</option>
+                    </select>
+                </div>
+
+                <div class="form-item">
+                    <label>HTTPS 证书文件完整路径</label>
+                    <input id="setCertFile" class="field"
+                        placeholder="证书文件路径">
+                </div>
+
+                <div class="form-item">
+                    <label>HTTPS 私钥文件完整路径</label>
+                    <input id="setKeyFile" class="field"
+                        placeholder="私钥文件路径">
+                </div>
+
+                <div class="notice danger-note">
+                    域名需要路由器 DNS 或客户端 hosts 指向服务器 IP。
+                    HTTPS 证书还必须被访问设备信任。
+                    保存端口或 HTTPS 设置后，需要重启服务。
+                </div>
+            </div>
+
+            <div class="setting-card">
+                <h3>库存规则</h3>
+
+                <div class="form-item">
+                    <label>默认安全库存阈值</label>
+                    <input id="setThreshold" class="field"
+                        type="number" min="0" step="0.1">
+                </div>
+
+                <div class="form-item">
+                    <label>每日自动备份时间</label>
+                    <input id="setBackupTime" class="field"
+                        type="time">
+                </div>
+
+                <div class="form-item">
+                    <label>自动备份</label>
+                    <select id="setAutoBackup" class="field">
+                        <option value="true">开启</option>
+                        <option value="false">关闭</option>
+                    </select>
+                </div>
+
+                <div class="form-item">
+                    <label>备份保留天数</label>
+                    <input id="setKeep" class="field"
+                        type="number" min="1" max="365">
+                </div>
+
+                <div class="form-item">
+                    <label>备份目录</label>
+                    <input id="setBackupDir" class="field">
+                </div>
+
+                <div class="form-item">
+                    <label>采购单保存目录</label>
+                    <input id="setPurchaseDir" class="field">
+                </div>
+            </div>
+
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;margin-top:16px">
+            <button class="btn primary" onclick="saveSettings()">
+                保存设置
+            </button>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">当前访问信息</div>
+        <div id="accessInfo" class="muted"></div>
+    </div>
+</section>
+
+
+<!-- 数据备份 -->
+<section class="page" id="page-data">
+    <div class="page-head">
+        <div>
+            <h2>数据备份</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                自动备份包含数据库、配置、商品图片和采购附件；建议下载完整备份并另存到其他设备
+            </div>
+        </div>
+
+        <button class="btn primary" onclick="makeBackup()">
+            立即备份
+        </button>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">备份文件</div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>文件名</th>
+                        <th>大小</th>
+                        <th>备份时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="backupRows"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">恢复数据库</div>
+
+        <div class="notice danger-note">
+            完整备份 ZIP 可恢复数据库、商品图片和采购附件，旧版 .db 文件可恢复数据库。恢复会保留当前页面、功能和服务设置。恢复后请用备份内的账号重新登录。
+        </div>
+
+        <div class="toolbar">
+            <input id="restoreFile" type="file"
+                accept=".zip,.db,application/zip,application/x-sqlite3" class="field">
+
+            <button class="btn danger" onclick="restoreDb()">
+                恢复备份
+            </button>
+        </div>
+    </div>
+</section>
+
+
+<!-- 使用教程 -->
+<section class="page" id="page-help">
+    <div class="page-head">
+        <div>
+            <h2>使用教程</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                日常操作说明
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">1. 第一次使用</div>
+        <ol>
+            <li>在服务器电脑运行门店管理系统服务器程序。</li>
+            <li>第一次打开时，创建唯一管理员账号。</li>
+            <li>管理员登录后进入人员管理，注册员工账号并分配权限。</li>
+            <li>手机和电脑连接同一个 Wi-Fi/局域网。</li>
+            <li>在浏览器输入服务器显示的 IP 地址和端口。</li>
+            <li>如需使用域名，需要在路由器 DNS 或客户端 hosts 中配置解析。</li>
+        </ol>
+
+        <div class="panel-title">2. 入库和出库</div>
+        <ol>
+            <li>员工使用自己的账号登录。</li>
+            <li>进入日常登记，选择业务类型。</li>
+            <li>输入商品 ID、品牌、品名或规格搜索商品。</li>
+            <li>选择商品后，商品资料自动填充。</li>
+            <li>填写数量和备注，点击提交。</li>
+            <li>经办人由当前登录账号自动关联。</li>
+        </ol>
+
+        <div class="panel-title">3. 商品档案</div>
+        <ol>
+            <li>进入商品档案，点击新增商品。</li>
+            <li>品牌、规格、分类、存放位置和单位都支持搜索已有选项。</li>
+            <li>没有匹配选项时，可以直接输入新值。</li>
+            <li>保存后，新值会进入后续下拉选项。</li>
+        </ol>
+
+        <div class="panel-title">4. 盘点</div>
+        <ol>
+            <li>业务类型选择“盘点调整”。</li>
+            <li>填写实际盘点数量，注意这里填写的是实盘数量，不是差异值。</li>
+            <li>允许填写 0，系统自动计算盘盈或盘亏。</li>
+        </ol>
+
+        <div class="panel-title">5. 备份</div>
+        <ol>
+            <li>系统默认每天自动备份，保留 30 天。</li>
+            <li>也可以进入“数据备份”手动备份。</li>
+            <li>建议同时下载数据库备份及配套商品图片 ZIP，并另存到其他磁盘。</li>
+        </ol>
+
+        <div class="panel-title">6. 注意事项</div>
+        <ul>
+            <li>服务器电脑关机时，其他设备无法访问；数据仍保存在服务器硬盘。</li>
+            <li>不支持断网离线录入，服务器离线时不要重复提交。</li>
+            <li>新安装默认启用 HTTPS；旧配置如显式关闭 HTTPS，需在设置中启用。手机扫码前需安装并信任本地 CA 证书，不能只忽略浏览器警告。</li>
+            <li>不要将服务器端口直接映射到公网。</li>
+            <li>不要将管理员账号和密码分享给普通员工。</li>
+        </ul>
+    </div>
+</section>
+
+
+<!-- 人员管理 -->
+<section class="page" id="page-users">
+    <div class="page-head">
+        <div>
+            <h2>人员管理</h2>
+            <div class="muted" style="margin-top:5px;font-size:12px">
+                管理员工账号、登录状态和所属权限规则组
+            </div>
+        </div>
+
+        <button class="btn primary" onclick="showUserModal()">
+            ＋ 注册人员
+        </button>
+    </div>
+
+    <div class="panel">
+        <div class="notice">
+            普通人员不能自行注册。管理员新建员工时无需设置密码，可指定、使用默认值或随机生成一次性首次登录码，请交给对应员工；员工首次登录后自行设置密码。登录码遗失可重新生成。账号禁用后，现有登录会话也会失效。
+            管理员账号不能通过普通员工注册接口创建。
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>登录账号</th>
+                        <th>姓名</th>
+                        <th>身份</th>
+                        <th>账号状态</th>
+                        <th>权限数量</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="userRows"></tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="panel-title">保持登录期限</div>
+        <label for="sessionPolicyDays">天数（留空表示永久）</label>
+        <input id="sessionPolicyDays" class="field" inputmode="numeric" type="number" min="1" max="3650">
+        <button class="btn" type="button" onclick="saveSessionPolicy()">保存期限</button>
+        <p class="muted">适用于今后通过 HTTPS 勾选「保持登录」的会话。已有会话保留原期限。</p>
+    </div>
+    <div class="panel" id="userGroupsPanel">
+        <div class="panel-title" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <span>权限规则组</span>
+            <button class="btn primary small" type="button" onclick="openPermissionGroupModal()">＋ 新建规则</button>
+        </div>
+        <p class="muted" style="font-size:12px;line-height:1.6">拖动员工到规则组即可授权；手机可使用下拉选择加入。员工可属于多个规则组；新员工不单独授予功能权限，历史直接授权保留待管理员检查。</p>
+        <div id="permissionGroupCards" class="permission-group-grid"></div>
+        <div class="panel-title" style="margin-top:14px">员工（可拖动）</div>
+        <div id="permissionGroupUserPool" class="permission-user-pool"></div>
+    </div>
+</section>
+
+<section class="page" id="page-controlcenter">
+    <div class="page-head"><div><h2>运营监控中心</h2><div class="muted" style="margin-top:5px;font-size:12px">集中查看库存预警、在线设备、操作审计、客户档案与经营数据</div></div><button class="btn" onclick="loadControlCenter()">↻ 刷新</button></div>
+    <div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="ccTabAlerts" onclick="loadControlTab('alerts')">库存预警</button><button class="btn" id="ccTabDevices" onclick="loadControlTab('devices')">在线设备</button><button class="btn" id="ccTabAudit" onclick="loadControlTab('audit')">操作审计</button><button class="btn" id="ccTabCustomers" onclick="loadControlTab('customers')">客户档案</button><button class="btn" id="ccTabWorkload" onclick="loadControlTab('workload')">美容师负荷</button><button class="btn" id="ccTabWaitlist" onclick="loadControlTab('waitlist')">候补名单</button><button class="btn" id="ccTabReports" onclick="loadControlTab('reports')">经营报表</button>
+    </div>
+    <div class="panel" style="padding:14px;overflow:auto"><div id="controlCenterContent" class="muted">请选择上方项目。</div></div>
+</section>
+
+</div>
+<!-- 手机底部导航 -->
+<nav class="mobile-nav app-bottom-nav" aria-label="门店系统快捷导航" id="mobileNav">
+    <button class="active" data-page="home"><span>▦</span>首页</button>
+    <button data-page="operation"><span>⇄</span>登记</button>
+    <button data-page="products"><span>▤</span>商品</button>
+    <button data-page="purchase"><span>▣</span>采购</button>
+    <button type="button" data-page="schedule"><span>▦</span>排班</button>
+    <button data-page="settings"><span>⚙</span>设置</button>
+    <button data-page="controlcenter" id="controlCenterMobileNav" hidden><span>▣</span>监控</button>
+</nav>
+</main>
+</div>
+
+
+
+
+
+<div class="modal" id="mobileScanMode">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mobileScanTitle">
+        <div class="page-head"><h2 id="mobileScanTitle">手机扫码</h2></div>
+        <div class="form-grid">
+            <button class="btn primary" type="button" data-scan-movement="入库">扫码入库</button>
+            <button class="btn primary" type="button" data-scan-movement="出库">扫码出库</button>
+            <button class="btn primary" type="button" data-scan-movement="盘点调整">扫码盘点</button>
+        </div>
+        <div class="modal-actions"><button class="btn" type="button" onclick="closeMobileScan()">取消</button></div>
+    </div>
+</div>
+
+<!-- 新增 / 编辑商品 -->
+<div class="modal" id="productModal">
+    <div class="modal-box">
+        <div class="page-head">
+            <h2 id="productModalTitle">新增商品</h2>
+            <button class="btn" onclick="closeProduct()">✕</button>
+        </div>
+
+        <div class="product-photo-editor">
+            <div id="productPhotoPreview" aria-label="商品图片预览"></div>
+            <div class="product-photo-actions" id="productPhotoActions">
+                <button type="button" class="btn" onclick="$('productPhotoCamera').click()">📷 拍照并裁剪</button>
+                <button type="button" class="btn" onclick="$('productPhotoPicker').click()">选择相册图片</button>
+                <span class="muted" style="font-size:12px">自动居中裁剪为 640×640 正方形，保存商品时上传</span>
+            </div>
+            <input type="file" id="productPhotoCamera" accept="image/*" capture="environment" hidden onchange="handleProductPhotoFile(this)">
+            <input type="file" id="productPhotoPicker" accept="image/png,image/jpeg,image/webp" hidden onchange="handleProductPhotoFile(this)">
+        </div>
+        <div class="form-grid">
+            <div class="form-item">
+                <label>商品 ID（新增可留空自动生成）</label>
+                <input id="pId" class="field"
+                    placeholder="自动生成 SYS-001">
+            </div>
+
+            <div class="form-item">
+                <label>品牌</label>
+                <input id="pBrand" class="field"
+                    list="brandOptions" autocomplete="off">
+            </div>
+
+            <div class="form-item">
+                <label>条形码（允许为空；非空不可重复）</label>
+                <div style="display:flex;gap:6px">
+                    <input id="pBarcode" class="field" autocomplete="off" style="flex:1;min-width:0">
+                    <button type="button" class="btn" onclick="startBarcodeScan('pBarcode')">📷 扫码</button>
+                </div>
+            </div>
+
+            <div class="form-item">
+                <label>品名 *</label>
+                <input id="pName" class="field" required>
+            </div>
+
+            <div class="form-item">
+                <label>规格</label>
+                <input id="pSpec" class="field"
+                    list="specOptions" autocomplete="off">
+            </div>
+
+            <div class="form-item">
+                <label>分类</label>
+                <input id="pCategory" class="field"
+                    list="categoryList" autocomplete="off">
+            </div>
+
+            <div class="form-item">
+                <label>存放位置</label>
+                <input id="pLocation" class="field"
+                    list="locationOptions" autocomplete="off">
+            </div>
+
+            <div class="form-item">
+                <label>单位</label>
+                <input id="pUnit" class="field"
+                    list="unitOptions" autocomplete="off">
+            </div>
+
+            <div class="form-item">
+                <label>期初库存（仅新增有效）</label>
+                <input id="pOpening" class="field"
+                    type="number" step="0.01" value="0">
+            </div>
+
+            <div class="form-item">
+                <label>独立安全阈值（留空使用默认值）</label>
+                <input id="pThreshold" class="field"
+                    type="number" step="0.01">
+            </div>
+        </div>
+
+        <datalist id="brandOptions"></datalist>
+        <datalist id="specOptions"></datalist>
+        <datalist id="categoryList"></datalist>
+        <datalist id="locationOptions"></datalist>
+        <datalist id="unitOptions"></datalist>
+
+        <div class="modal-actions">
+            <button class="btn" onclick="closeProduct()">取消</button>
+            <button class="btn primary" id="saveProductButton"
+                onclick="saveProduct()">保存商品</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="imageViewerModal" role="dialog" aria-modal="true" aria-label="商品图片大图">
+ <div class="modal-box"><div class="page-head"><h2>商品图片</h2><button type="button" class="btn" onclick="$('imageViewerModal').classList.remove('show')">关闭</button></div><div id="imageViewerDisplay"></div></div>
+</div>
+
+<!-- 人员注册和权限管理 -->
+<div class="modal" id="userModal">
+    <div class="modal-box">
+        <div class="page-head">
+            <h2 id="userModalTitle">注册人员</h2>
+            <button class="btn" onclick="closeUserModal()">✕</button>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-item">
+                <label>登录账号</label>
+                <input id="userUsername" class="field">
+            </div>
+
+            <div class="form-item">
+                <label>显示姓名 / 经办人姓名</label>
+                <input id="userDisplayName" class="field">
+            </div>
+
+            <div class="form-item" id="userPasswordBox" style="grid-column:1/-1">
+                <div class="notice">
+                    员工在登录密码框输入首次登录码，再自行设置密码。
+                </div>
+                <label for="staffActivationCode">自定义首次登录码（可选，8 位数字）</label>
+                <input id="staffActivationCode" class="field" type="password" inputmode="numeric"
+                    maxlength="8" autocomplete="new-password" placeholder="留空时使用下方选项">
+                <label><input id="staffUseDefaultCode" type="checkbox" disabled> 使用管理员默认登录码</label>
+                <p class="muted">留空且未勾选时，系统随机生成。</p>
+                <button type="button" class="btn small" onclick="changeDefaultActivationCode()">设置默认登录码</button>
+                <button type="button" class="btn small" onclick="changeDefaultActivationCode(true)">清除默认登录码</button>
+            </div>
+        </div>
+
+        <div class="form-item" style="margin-top:14px">
+            <label>绑定排班美容师档案（启用“修改本人当天排班”时必需）</label>
+            <select id="userScheduleStaff" class="field"><option value="">不绑定</option></select>
+        </div>
+
+        <div class="form-item" style="margin-top:14px">
+            <label>所属权限规则组（可多选）</label>
+            <div id="userGroupChoices" class="permission-grid"></div>
+            <p class="muted" style="font-size:12px">员工权限来自规则组，后续直接在规则组中拖入或移出员工，无需逐人设置权限。</p>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn" onclick="closeUserModal()">取消</button>
+            <button class="btn primary" onclick="saveUser()">保存人员</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal" id="excelExportModal" role="dialog" aria-modal="true" aria-labelledby="excelExportTitle">
+  <div class="modal-box">
+    <div class="page-head">
+      <h2 id="excelExportTitle">导出 Excel</h2>
+      <button class="btn" type="button" onclick="closeExcelExport()" aria-label="关闭导出设置">✕</button>
+    </div>
+    <div class="form-item">
+      <label for="excelTemplateChoice">导出模板</label>
+      <select class="field" id="excelTemplateChoice" onchange="selectExcelTemplate(this.value)"></select>
+    </div>
+    <fieldset style="margin:14px 0;border:1px solid var(--line);border-radius:10px">
+      <legend>导出字段</legend>
+      <div class="row-actions" style="margin-bottom:8px">
+        <button type="button" class="btn small" onclick="selectAllExcelFields(true)">全选</button>
+        <button type="button" class="btn small" onclick="selectAllExcelFields(false)">清空</button>
+      </div>
+      <div id="excelFieldChoices" class="permission-grid"></div>
+    </fieldset>
+    <div class="form-item">
+      <label for="excelTemplateName">模板名称</label>
+      <input class="field" id="excelTemplateName" maxlength="60">
+    </div>
+    <label class="permission-item" style="margin:8px 0"><input id="excelTemplateDefault" type="checkbox">下次默认使用此模板</label>
+    <div class="row-actions">
+      <button type="button" class="btn small" onclick="saveExcelTemplate(true)">保存为新模板</button>
+      <button type="button" class="btn small" id="excelUpdateTemplate" onclick="saveExcelTemplate(false)">更新模板</button>
+      <button type="button" class="btn small danger" id="excelDeleteTemplate" onclick="deleteExcelTemplate()">删除模板</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" type="button" onclick="closeExcelExport()">取消</button>
+      <button class="btn primary" type="button" id="excelDownloadButton" onclick="downloadExcelExport()">下载 Excel</button>
+    </div>
+  </div>
+</div>
+
+<!-- 权限组规则编辑（只有管理员拥有 API 访问权限） -->
+<div class="modal" id="permissionGroupModal">
+  <div class="modal-box">
+    <div class="page-head"><h2 id="permissionGroupModalTitle">新建权限规则</h2><button class="btn" type="button" onclick="closePermissionGroupModal()">✕</button></div>
+    <div class="form-item"><label>规则名称</label><input id="permissionGroupName" class="field" maxlength="40" placeholder="例如：前台接待、库存管理员"></div>
+    <p class="muted" style="font-size:12px;margin-top:12px">管理员通过系统角色获得完整权限。店长模板用于日常经营，人员授权、数据库管理和系统设置由管理员操作。美容师需绑定本人排班档案。</p>
+    <div class="form-item" style="margin:10px 0"><label>快速套用权限模板（可再修改）</label>
+      <select id="permissionGroupPreset" class="field" onchange="applyGroupPreset(this.value)"><option value="">不使用模板</option><option value="manager">店长</option><option value="admin" disabled>管理员（系统角色）</option><option value="frontdesk">前台接待</option><option value="inventory">库存管理</option><option value="stylist">美容师</option><option value="auditor">报表与审计</option></select>
+    </div>
+    <div id="permissionGroupPermissions" class="permission-grid"></div>
+    <div class="modal-actions"><button class="btn" type="button" onclick="closePermissionGroupModal()">取消</button><button class="btn primary" type="button" onclick="savePermissionGroup()">保存规则</button></div>
+  </div>
+</div>
+
+<!-- 手机后置摄像头条码扫描 -->
+<div id="barcodeScanner" class="modal" style="z-index:3000">
+    <div class="modal-box" style="max-width:560px">
+        <div class="page-head"><h2>扫描商品条码</h2><button class="btn" type="button" onclick="stopBarcodeScan()">关闭</button></div>
+        <div class="barcode-video-wrap"><video id="barcodeVideo" playsinline muted style="width:100%;max-height:55vh;background:#111;border-radius:12px;object-fit:cover"></video><div class="barcode-aim" aria-hidden="true"></div></div>
+        <p class="muted" id="barcodeScanHint">请将一维条码放入中央取景框。二维码会自动忽略；识别需连续确认两帧，避免误读。</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn" id="barcodeTorchBtn" type="button" hidden onclick="toggleBarcodeTorch()">开启补光灯</button>
+          <button class="btn primary" type="button" onclick="captureBarcodeFrame()">识别当前画面</button>
+          <button class="btn" type="button" onclick="$('barcodePhotoInput').click()">📷 拍照识别条码</button>
+          <span class="muted" style="font-size:12px;align-self:center">兼容识别支持 EAN-13 / EAN-8 / UPC-A；二维码自动忽略</span>
+        </div>
+        <input id="barcodePhotoInput" type="file" accept="image/*" capture="environment" hidden onchange="decodeBarcodePhoto(this)">
+    </div>
+</div>
+
+<!-- 登录 / 首次初始化 -->
+<div class="auth-gate show" id="authGate">
+    <div class="auth-card">
+        <h2 id="authTitle">门店管理系统</h2>
+        <p class="muted" id="authDescription">
+            正在检查登录状态…
+        </p>
+
+        <form id="loginPane" hidden>
+            <div class="form-item">
+                <label>登录账号</label>
+                <input id="loginUsername" class="field"
+                    autocomplete="username">
+            </div>
+
+            <div class="form-item">
+                <label>密码或首次登录码</label>
+                <input id="loginPassword" class="field"
+                    type="password"
+                    autocomplete="current-password" maxlength="128"
+                    placeholder="首次登录请输入管理员提供的登录码">
+            </div>
+
+            <label class="permission-item"><input id="rememberBrowser" type="checkbox">在此浏览器保持登录</label>
+            <button class="btn primary"
+                style="width:100%;margin-top:12px"
+                type="submit">登录系统</button>
+        </form>
+
+        <div id="firstPasswordPane" hidden>
+            <div class="notice">
+                首次登录验证成功。请自行设置登录密码，至少 8 位；设置成功前不能进入门店业务页面。
+            </div>
+            <div class="form-item">
+                <label>设置新登录密码</label>
+                <input id="firstPassword" class="field" type="password"
+                    autocomplete="new-password" minlength="8" maxlength="128">
+            </div>
+            <div class="form-item">
+                <label>确认新登录密码</label>
+                <input id="firstPasswordConfirm" class="field" type="password"
+                    autocomplete="new-password" minlength="8" maxlength="128">
+            </div>
+            <button class="btn primary"
+                style="width:100%;margin-top:12px"
+                onclick="doSetFirstPassword()">保存密码并进入系统</button>
+        </div>
+
+        <div id="setupPane" hidden>
+            <div class="notice">
+                首次使用，请创建唯一的系统管理员。
+                管理员创建后，不能再通过公开注册创建第二个管理员。
+            </div>
+
+            <div class="form-item">
+                <label>管理员登录账号</label>
+                <input id="setupUsername" class="field"
+                    autocomplete="username">
+            </div>
+
+            <div class="form-item">
+                <label>管理员显示姓名</label>
+                <input id="setupDisplayName" class="field">
+            </div>
+
+            <div class="form-item">
+                <label>管理员密码（至少 8 位）</label>
+                <input id="setupPassword" class="field"
+                    type="password"
+                    autocomplete="new-password">
+            </div>
+
+            <button class="btn primary"
+                style="width:100%;margin-top:12px"
+                onclick="doBootstrap()">
+                创建管理员并进入系统
+            </button>
+        </div>
+
+        <div class="auth-error" id="authError" role="status" aria-live="polite"></div>
+        <noscript>请启用 JavaScript 后使用门店管理系统。</noscript>
+    </div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+
+
+
+
+
+"use strict";
+
+
+// ============================================================
+// 全局状态与基础函数
+// ============================================================
+
+const $ = id => document.getElementById(id);
+
+let products = [];
+let allProducts = [];
+
+let productOptionsData = {
+    brands: [],
+    specs: [],
+    categories: [],
+    locations: [],
+    units: []
+};
+
+let editingId = null;
+let currentUser = null;
+let currentEditingUserId = null;
+let usersCache = [];
+
+let ws = null;
+let toastTimer = null;
+let prodTimer = null;
+let deviceHeartbeatTimer = null;
+let notificationCache = [];
+
+
+async function api(url, opts = {}) {
+    const headers = {
+        ...(opts.body instanceof FormData
+            ? {}
+            : {"Content-Type": "application/json"}),
+        ...(opts.headers || {})
+    };
+
+    const response = await fetch(url, {
+        credentials: "same-origin",
+        ...opts,
+        headers
+    });
+
+    let data = {};
+
+    try {
+        data = await response.json();
+    } catch {
+        data = {};
+    }
+
+    if (!response.ok) {
+        if (response.status === 401 &&
+            !url.startsWith("/api/auth/")) {
+            currentUser = null;
+            showAuthPane("login", "登录状态已过期，请重新登录");
+        }
+
+        const error = new Error(data.detail || `请求失败（HTTP ${response.status}）`);
+        error.status = response.status;
+        throw error;
+    }
+
+    return data;
+}
+
+
+function toast(message) {
+    $("toast").textContent = message;
+    $("toast").style.display = "block";
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        $("toast").style.display = "none";
+    }, 2800);
+}
+
+
+function fmt(value) {
+    return value == null
+        ? "—"
+        : Number(value).toLocaleString("zh-CN", {
+            maximumFractionDigits: 2
+        });
+}
+
+
+function esc(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
+}
+
+
+function emptyRow(count) {
+    return `<tr><td colspan="${count}" class="empty">暂无数据</td></tr>`;
+}
+
+
+function hasPermission(name) {
+    if (!currentUser) return false;
+
+    if (currentUser.role === "admin") return true;
+
+    return !!currentUser.permissions?.[name];
+}
+
+
+// ============================================================
+// 页面导航
+// ============================================================
+
+const navigationOrder = ['home','operation','products','purchase','transactions','archive','schedule','controlcenter','users','settings','data','help'];
+let activePage = null;
+let pageRead = null;
+let refreshPending = false;
+
+function pageAllowed(page) {
+    return StoreInventoryShell.canOpenPage(page, currentUser);
+}
+
+function go(page, {replace = false, fromHistory = false} = {}) {
+    if (!pageAllowed(page)) return;
+    const url = new URL(location.href);
+    if (url.searchParams.get("page") !== page) url.search = "?page=" + page;
+    if (page === "schedule") {
+        if (replace) location.replace(url);
+        else location.assign(url);
+        return;
+    }
+    const pageElement = $("page-" + page);
+    if (!pageElement) return;
+    if (!fromHistory && url.href !== location.href) {
+        history[replace ? "replaceState" : "pushState"]({}, "", url);
+    }
+    document.querySelectorAll(".page").forEach(element => {
+        element.classList.toggle("active", element === pageElement);
+    });
+    activePage = page;
+    StoreInventoryShell.setCurrentNavigation();
+    const nav = document.querySelector('.sidebar [data-page="' + page + '"]');
+    $("topTitle").textContent = nav?.textContent.trim().replace(/^\S+\s+/, '') || page;
+    toggleMobileMenu(false);
+    void loadActivePage();
+}
+
+async function loadActivePage({background = false} = {}) {
+    const page = activePage;
+    if (!page || !pageAllowed(page)) return;
+    if (pageRead?.page === page) return pageRead.promise;
+    const job = {page};
+    job.promise = (async () => {
+        if (page === "home") return loadSummary();
+        if (page === "operation") {
+            if (!$("opRows").children.length) resetOp();
+            return loadAllProducts();
+        }
+        if (page === "products") return loadProducts();
+        if (page === "transactions") return loadTransactions();
+        if (page === "purchase") return loadPurchase();
+        if (page === "archive") return loadHistory();
+        if (page === "settings") return loadSettings();
+        if (page === "data") return loadBackups();
+        if (page === "users") return loadUsers();
+        if (page === "controlcenter" && !background) return loadControlCenter();
+    })().catch(error => { if (!background) toast(error.message); })
+        .finally(() => { if (pageRead === job) pageRead = null; });
+    pageRead = job;
+    return job.promise;
+}
+
+window.addEventListener("popstate", () => {
+    const page = new URLSearchParams(location.search).get("page") || "home";
+    if (pageAllowed(page)) go(page, {fromHistory: true});
+    else {
+        const fallback = navigationOrder.find(pageAllowed);
+        if (fallback) go(fallback, {replace: true});
+    }
+});
+
+document.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => {
+        go(button.dataset.page);
+    });
+});
+
+
+function toggleMobileMenu(force) {
+    const sidebar = $("sidebar");
+    const overlay = $("mobileOverlay");
+
+    const shouldOpen = typeof force === "boolean"
+        ? force
+        : !sidebar.classList.contains("mobile-open");
+
+    sidebar.classList.toggle("mobile-open", shouldOpen);
+    overlay.classList.toggle("show", shouldOpen);
+}
+
+
+// ============================================================
+// 登录 / 首次管理员初始化
+// ============================================================
+
+function showAuthPane(mode, message = "") {
+    $("authGate").classList.add("show");
+
+    $("loginPane").hidden = mode !== "login";
+    $("setupPane").hidden = mode !== "setup";
+    $("firstPasswordPane").hidden = mode !== "set-password";
+
+    $("authTitle").textContent =
+        mode === "setup"
+            ? "首次初始化管理员"
+            : mode === "set-password"
+                ? "设置个人登录密码"
+                : "门店管理系统";
+
+    $("authDescription").textContent =
+        mode === "setup"
+            ? "请创建系统管理员账号"
+            : mode === "set-password"
+                ? `欢迎，${currentUser?.display_name || currentUser?.username || "新员工"}。首次登录需要先设置密码。`
+                : "请登录后使用库存系统";
+
+    $("authError").textContent = message;
+}
+
+
+async function authInit({ requireSession = false, expectedUsername } = {}) {
+    try {
+        const state = await api("/api/auth/status", {cache: "no-store"});
+        if (typeof state.initialized !== "boolean") throw new Error("服务器未返回有效的登录状态，请刷新重试。");
+
+        if (requireSession && (!state.authenticated || !state.user ||
+                (expectedUsername && state.user.username !== expectedUsername))) {
+            currentUser = null;
+            if (!state.session_cookie_received) {
+                throw new Error("浏览器没有送回登录 Cookie。请允许本站 Cookie，并在同一个地址重新登录。");
+            }
+            if (state.authenticated && state.user) {
+                throw new Error("浏览器仍在使用另一个账号的会话。请关闭本站其他标签页，再登录当前账号。");
+            }
+            throw new Error("服务器未识别到有效登录会话，请重新登录。首次登录码若提示已使用，请联系管理员重置。");
+        }
+
+        if (!state.initialized) {
+            showAuthPane("setup");
+            return true;
+        }
+
+        if (!state.authenticated || !state.user) {
+            currentUser = null;
+            showAuthPane("login");
+            return true;
+        }
+
+        currentUser = state.user;
+
+        if (currentUser.must_set_password) {
+            showAuthPane("set-password");
+            return true;
+        }
+
+        $("authGate").classList.remove("show");
+
+        applyUserState();
+
+        void startApplication();
+        return true;
+
+    } catch (error) {
+        if (requireSession) throw error;
+        showAuthPane("login", error.message);
+        return false;
+    }
+}
+
+
+let authSubmissionPending = false;
+
+async function submitAuth(pane, message, action) {
+    if (authSubmissionPending) return;
+    authSubmissionPending = true;
+    const button = $(pane).querySelector("button");
+    button.disabled = true;
+    $("authError").textContent = message;
+    try {
+        await action();
+    } finally {
+        authSubmissionPending = false;
+        button.disabled = false;
+    }
+}
+
+async function doLogin() {
+    try {
+        const username = $("loginUsername").value.trim();
+        const password = $("loginPassword").value;
+
+        if (!username) {
+            showAuthPane("login", "请输入登录账号");
+            return;
+        }
+
+        if (!password) {
+            showAuthPane("login", "请输入登录密码或首次登录码");
+            return;
+        }
+
+        await submitAuth("loginPane", "正在登录…", async () => {
+            const check = await api("/api/auth/cookie-probe", {method:"POST", cache:"no-store"});
+            if (typeof check.probe !== "string") throw new Error("无法检查浏览器会话，请刷新页面后重试。");
+            const result = await api("/api/auth/login", {
+                method: "POST",
+                body: JSON.stringify({username, password, cookie_probe:check.probe, remember_browser: $("rememberBrowser")?.checked === true})
+            });
+
+            $("loginPassword").value = "";
+            await authInit({requireSession: result.must_set_password ? "first" : true, expectedUsername: result.username || username});
+        });
+
+    } catch (error) {
+        showAuthPane("login", error.message);
+    }
+}
+
+
+async function doSetFirstPassword() {
+    const password = $("firstPassword").value;
+    const confirmPassword = $("firstPasswordConfirm").value;
+
+    if (password.length < 8 || password.length > 128) {
+        showAuthPane("set-password", "登录密码长度必须为 8–128 位");
+        return;
+    }
+    if (password !== confirmPassword) {
+        showAuthPane("set-password", "两次输入的密码不一致");
+        return;
+    }
+
+    try {
+        await submitAuth("firstPasswordPane", "正在保存密码…", async () => {
+            await api("/api/auth/set-first-password", {
+                method: "POST",
+                body: JSON.stringify({password})
+            });
+            $("firstPassword").value = "";
+            $("firstPasswordConfirm").value = "";
+            toast("登录密码设置成功");
+            await authInit({requireSession: true});
+        });
+    } catch (error) {
+        showAuthPane("set-password", error.message);
+    }
+}
+
+
+async function doBootstrap() {
+    try {
+        const username = $("setupUsername").value.trim();
+        const displayName = $("setupDisplayName").value.trim();
+        const password = $("setupPassword").value;
+
+        if (!username || !displayName || !password) {
+            showAuthPane("setup", "请填写完整信息");
+            return;
+        }
+
+        if (username.length < 3) {
+            showAuthPane("setup", "管理员账号至少 3 个字符");
+            return;
+        }
+
+        if (password.length < 8) {
+            showAuthPane("setup", "密码至少需要 8 位");
+            return;
+        }
+
+        await submitAuth("setupPane", "正在创建管理员…", async () => {
+            await api("/api/auth/bootstrap", {
+                method: "POST",
+                body: JSON.stringify({
+                    username,
+                    display_name: displayName,
+                    password
+                })
+            });
+
+            await authInit({requireSession: true});
+        });
+
+    } catch (error) {
+        showAuthPane("setup", error.message);
+    }
+}
+
+
+async function logout() {
+    try {
+        if (ws) {
+            ws.close();
+            ws = null;
+        }
+
+        await api("/api/auth/logout", {
+            method: "POST",
+            body: JSON.stringify({})
+        });
+
+        currentUser = null;
+        activePage = null;
+        allProducts = [];
+        products = [];
+
+        $("opRows").innerHTML = "";
+
+        showAuthPane("login", "已退出登录");
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+function applyUserState() {
+    const identityRole = currentUser.role === "admin" ? "管理员" : "员工";
+    $("userDisplay").textContent = `${currentUser.display_name || currentUser.username} · ${identityRole}`;
+
+    $("userNav").hidden =
+        currentUser.role !== "admin";
+    $("notificationButton").hidden = !hasPermission("notifications_view");
+    const tabPermissions = {ccTabAlerts:["ext.inventory.read","products_view","operation"],ccTabDevices:["devices_view"],ccTabAudit:["audit_view"],ccTabCustomers:["ext.customers.read"],ccTabWorkload:["ext.scheduling.workload_read_all","ext.scheduling.workload_read_self"],ccTabWaitlist:["ext.waitlist.read"],ccTabReports:["reports_view"]};
+    Object.entries(tabPermissions).forEach(([id,keys])=>{const el=$(id);if(el)el.hidden=!keys.some(hasPermission);});
+    const stockActions = {"入库":"ext.inventory.inbound_create","出库":"ext.inventory.outbound_create","盘点调整":"ext.inventory.stocktake_adjust"};
+    for (const option of $("opType").options) {
+        option.disabled = option.hidden = !hasPermission(stockActions[option.value]);
+    }
+    $("mobileScanEntry").hidden = !Object.values(mobileScanPermissions).some(hasPermission);
+    for (const section of document.querySelectorAll("section.page")) {
+        section.hidden = !pageAllowed(section.id.slice(5));
+    }
+
+    $("addProductButton").hidden = !hasPermission("ext.catalog.create");
+    $("submitDocButton").hidden = !pageAllowed("operation");
+    const controlPermissions = [
+        ["button[onclick='saveSettings()']", "settings_manage"],
+        ["button[onclick='makeBackup()']", "backup_manage"],
+        ["button[onclick='restoreDb()'],#restoreFile", "backup_restore"],
+        ["button[onclick*=\"exportFile('products'\"]", "ext.catalog.export"],
+        ["button[onclick*=\"exportFile('transactions'\"]", "ext.transactions.export"],
+        ["button[onclick*=\"exportFile('purchase'\"]", "ext.procurement.export"],
+    ];
+    for (const [selector, permission] of controlPermissions) {
+        document.querySelectorAll(selector).forEach(element => {
+            element.hidden = !hasPermission(permission);
+        });
+    }
+
+    $("opOperator").value = currentUser.display_name;
+    $("opOperator").readOnly = true;
+
+    const sidebarButtons =
+        document.querySelectorAll(".sidebar [data-page]");
+
+    sidebarButtons.forEach(button => {
+        const page = button.dataset.page;
+
+        if (page === "users") {
+            button.hidden = currentUser.role !== "admin";
+            return;
+        }
+
+        button.hidden = !pageAllowed(page);
+    });
+
+    document.querySelectorAll("#mobileNav [data-page]").forEach(button => {
+        button.hidden = !pageAllowed(button.dataset.page);
+    });
+}
+
+
+async function startApplication() {
+    const requested = new URLSearchParams(location.search).get("page");
+    const page = pageAllowed(requested) ? requested : navigationOrder.find(pageAllowed);
+    if (page) go(page, {replace: true});
+    else $("topTitle").textContent = "当前账号暂无可用页面";
+    if (page === "schedule") return;
+    if (page) connectWS();
+    if (["dashboard","products_view","operation","ext.catalog.read","ext.scheduling.read","ext.appointments.read","ext.appointments.read_self"].some(hasPermission)) startDeviceHeartbeat();
+    if (hasPermission("notifications_view")) void refreshNotificationCount();
+}
+
+
+// ============================================================
+// 商品数据和选项
+// ============================================================
+
+async function loadAllProducts() {
+    allProducts = await api(
+        "/api/products?status=全部&category=全部"
+    );
+
+    refreshOperationOptions();
+}
+
+
+function refreshOperationOptions() {
+    updateAllProductLists();
+}
+
+
+function updateAllProductLists() {
+    const dataList = $("productOptions");
+
+    if (!dataList) return;
+
+    dataList.innerHTML = allProducts.map(product => {
+        const label = [
+            product.id,
+            product.barcode || "",
+            product.brand || "",
+            product.name || "",
+            product.spec || ""
+        ].join(" | ");
+
+        return `<option value="${esc(label)}"></option>`;
+    }).join("");
+}
+
+
+async function loadProductOptions() {
+    productOptionsData = await api("/api/product-options");
+
+    const mapping = {
+        brandOptions: productOptionsData.brands,
+        specOptions: productOptionsData.specs,
+        categoryList: productOptionsData.categories,
+        locationOptions: productOptionsData.locations,
+        unitOptions: productOptionsData.units
+    };
+
+    for (const [id, values] of Object.entries(mapping)) {
+        const element = $(id);
+
+        if (!element) continue;
+
+        element.innerHTML = values.map(value =>
+            `<option value="${esc(value)}"></option>`
+        ).join("");
+    }
+
+    const categorySelect = $("prodCategory");
+    const oldValue = categorySelect.value;
+
+    categorySelect.innerHTML =
+        '<option value="全部">全部分类</option>' +
+        productOptionsData.categories.map(category =>
+            `<option value="${esc(category)}">${esc(category)}</option>`
+        ).join("");
+
+    categorySelect.value =
+        productOptionsData.categories.includes(oldValue)
+            ? oldValue
+            : "全部";
+}
+
+
+// ============================================================
+// 首页看板
+// ============================================================
+
+async function loadSummary() {
+    try {
+        const data = await api("/api/summary");
+
+        $("sProducts").textContent = data.product_count;
+        $("sLow").textContent = data.low_count;
+        $("sDocs").textContent = data.today_docs;
+        $("sLines").textContent = data.today_lines;
+
+        $("recentRows").innerHTML = data.recent.map(item => `
+            <tr>
+                <td>${esc(item.time?.replace("T", " ") || "")}</td>
+                <td>${esc(item.type)}</td>
+                <td>${esc(item.doc_no)}</td>
+                <td>
+                    <span class="photo-inline">${productPhoto({id:item.product_id,name:item.product_name,image_filename:item.image_filename}, "small")}<span>${esc(item.product_name)} <span class="muted">${esc(item.product_id)}</span></span></span>
+                </td>
+                <td>${fmt(item.qty_in)}</td>
+                <td>${fmt(item.qty_out)}</td>
+                <td>${fmt(item.qty_adjust)}</td>
+                <td>${esc(item.operator || "")}</td>
+            </tr>
+        `).join("") || emptyRow(8);
+
+        const low = await api("/api/purchase");
+
+        $("lowPreview").innerHTML = low.length
+            ? low.slice(0, 6).map(product => `
+                <div style="display:flex;justify-content:space-between;
+                    padding:8px 0;border-bottom:1px solid var(--line)">
+                    <span>
+                        <span class="photo-inline">${productPhoto(product,"small")}<span>${esc(product.name)} <span class="muted">${esc(product.id)}</span></span></span>
+                    </span>
+                    <span class="tag warn">
+                        库存 ${fmt(product.stock)}
+                        / 阈值 ${fmt(product.effective_threshold)}
+                    </span>
+                </div>
+            `).join("")
+            : "当前没有需要补货的商品";
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+// ============================================================
+// 商品档案
+// ============================================================
+
+// Product photos: the database stores a server-owned JPEG filename, never a client file path.
+let pendingProductPhoto = null;
+let pendingProductPhotoUrl = null;
+function emptyProductPhoto(size = "") {
+    return `<span class="product-photo placeholder ${size}" aria-label="暂无图片"><span aria-hidden="true">×</span></span>`;
+}
+function productPhoto(product, size = "") {
+    if (!product?.image_filename || !hasPermission("ext.catalog.image_read")) return emptyProductPhoto(size);
+    const id = encodeURIComponent(product.id);
+    return `<button class="product-photo ${size}" type="button" data-photo-id="${esc(product.id)}" aria-label="放大商品图片"><img src="/api/products/${id}/image" loading="lazy" alt="${esc(product.name || "商品")} 图片" onerror="this.parentElement.replaceWith(document.createRange().createContextualFragment(emptyProductPhoto('${size}')))" /></button>`;
+}
+document.addEventListener("click", event => {
+    const button = event.target.closest("[data-photo-id]");
+    if (!button) return;
+    event.preventDefault();
+    const id = button.dataset.photoId;
+    if (!id) return;
+    const item = allProducts.find(p => p.id === id) || products.find(p => p.id === id);
+    const label = item?.name || button.querySelector("img")?.alt || "商品";
+    $("imageViewerDisplay").innerHTML = `<span class="product-photo"><img src="/api/products/${encodeURIComponent(id)}/image" alt="${esc(label)} 大图"></span>`;
+    $("imageViewerModal").classList.add("show");
+});
+function releasePendingPhoto() {
+    if (pendingProductPhotoUrl) URL.revokeObjectURL(pendingProductPhotoUrl);
+    pendingProductPhotoUrl = null; pendingProductPhoto = null;
+}
+function showPhotoPreview(product) {
+    const preview = $("productPhotoPreview");
+    preview.innerHTML = pendingProductPhotoUrl
+        ? `<span class="product-photo large"><img src="${pendingProductPhotoUrl}" alt="待上传图片"></span>`
+        : productPhoto(product, "large");
+}
+async function handleProductPhotoFile(input) {
+    const file = input.files?.[0]; input.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/") || file.size > 6 * 1024 * 1024) return toast("请选择 6MB 以下的照片");
+    const url = URL.createObjectURL(file);
+    try {
+        const original = new Image();
+        await new Promise((resolve, reject) => {original.onload = resolve; original.onerror = reject; original.src = url;});
+        const size = Math.min(original.naturalWidth, original.naturalHeight);
+        if (!size || original.naturalWidth * original.naturalHeight > 20_000_000) throw new Error("图片尺寸超出限制");
+        const canvas = document.createElement("canvas"); canvas.width = canvas.height = 640;
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "#fff"; ctx.fillRect(0,0,640,640);
+        ctx.drawImage(original, (original.naturalWidth-size)/2, (original.naturalHeight-size)/2, size,size, 0,0,640,640);
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.82));
+        if (!blob) throw new Error("照片裁剪失败");
+        releasePendingPhoto();
+        pendingProductPhoto = blob;
+        pendingProductPhotoUrl = URL.createObjectURL(blob);
+        showPhotoPreview(null);
+        toast("照片已裁剪，保存商品时将上传");
+    } catch (error) {toast(error.message || "无法处理照片");}
+    finally {URL.revokeObjectURL(url);}
+}
+async function uploadPendingPhoto(productId) {
+    if (!pendingProductPhoto) return;
+    const data = new FormData(); data.append("file", pendingProductPhoto, "product.jpg");
+    const response = await fetch(`/api/products/${encodeURIComponent(productId)}/image`, {method:"POST",credentials:"same-origin",body:data});
+    if (!response.ok) {
+        let info = {};try {info=await response.json();}catch(e){}
+        throw new Error(info.detail || "商品已保存，但照片上传失败，请重新编辑上传");
+    }
+    releasePendingPhoto();
+}
+
+
+async function loadProducts() {
+    try {
+        await loadProductOptions();
+
+        const query = $("prodSearch").value || "";
+        const status = $("prodStatus").value || "全部";
+        const category = $("prodCategory").value || "全部";
+
+        products = await api(
+            `/api/products?q=${encodeURIComponent(query)}` +
+            `&status=${encodeURIComponent(status)}` +
+            `&category=${encodeURIComponent(category)}`
+        );
+
+        $("productRows").innerHTML = products.map(product => {
+            const edit = hasPermission("ext.catalog.update")
+                ? `<button class="btn small" onclick="editProduct('${esc(product.id)}')">编辑</button>` : "";
+            const disable = hasPermission("ext.catalog.disable")
+                ? `<button class="btn small danger" onclick="disableProduct('${esc(product.id)}')">停用</button>` : "";
+            const actions = edit || disable ? `<div class="row-actions">${edit}${disable}</div>`
+                : '<span class="muted">只读</span>';
+
+            return `
+                <tr>
+                    <td class="photo-cell" data-label="图片">${productPhoto(product)}</td>
+                    <td data-label="商品 ID"><b>${esc(product.id)}</b></td>
+                    <td data-label="条形码">${esc(product.barcode || "")}</td>
+                    <td data-label="品牌">${esc(product.brand)}</td>
+                    <td data-label="品名">${esc(product.name)}</td>
+                    <td data-label="规格">${esc(product.spec)}</td>
+                    <td data-label="分类">${esc(product.category)}</td>
+                    <td data-label="存放位置">${esc(product.location)}</td>
+                    <td data-label="单位">${esc(product.unit)}</td>
+                    <td data-label="期初库存">${fmt(product.opening)}</td>
+                    <td data-label="当前库存"><b>${fmt(product.stock)}</b></td>
+                    <td data-label="安全阈值">${fmt(product.effective_threshold)}</td>
+                    <td data-label="状态">
+                        <span class="tag ${product.status === "补货" ? "warn" : "ok"}">
+                            ${esc(product.status)}
+                        </span>
+                    </td>
+                    <td data-label="操作">${actions}</td>
+                </tr>
+            `;
+        }).join("") || emptyRow(14);
+
+        $("productCount").textContent =
+            `当前筛选 ${products.length} 个商品`;
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+function debounceProducts() {
+    clearTimeout(prodTimer);
+    prodTimer = setTimeout(loadProducts, 250);
+}
+
+
+function clearProductFilters() {
+    $("prodSearch").value = "";
+    $("prodStatus").value = "全部";
+    $("prodCategory").value = "全部";
+    loadProducts();
+}
+
+
+async function editProduct(id = null) {
+    try {
+        if (!allProducts.length) {
+            await loadAllProducts();
+        }
+
+        await loadProductOptions();
+
+        releasePendingPhoto();
+        editingId = id || null;
+
+        const product = id
+            ? allProducts.find(item => item.id === id)
+            : null;
+
+        if (id && !product) {
+            toast("商品不存在或当前未加载");
+            return;
+        }
+
+        $("productModalTitle").textContent =
+            product ? "编辑商品" : "新增商品";
+
+        $("pId").value = product?.id || "";
+        $("pId").disabled = !!product;
+
+        $("pBrand").value = product?.brand || "";
+        $("pBarcode").value = product?.barcode ?? "";
+        $("pName").value = product?.name || "";
+        $("pSpec").value = product?.spec || "";
+        $("pCategory").value = product?.category || "";
+        $("pLocation").value = product?.location || "";
+        $("pUnit").value = product?.unit || "";
+
+        $("pOpening").value = product?.opening ?? 0;
+        $("pOpening").disabled = !!product;
+
+        $("pThreshold").value = product?.threshold ?? "";
+        showPhotoPreview(product);
+        $("productPhotoActions").hidden = !hasPermission("ext.catalog.image_update");
+
+        $("productModal").classList.add("show");
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+function closeProduct() {
+    releasePendingPhoto();
+    $("productModal").classList.remove("show");
+}
+
+
+async function saveProduct() {
+    const payload = {
+        id: $("pId").value.trim(),
+        brand: $("pBrand").value.trim(),
+        barcode: $("pBarcode").value,
+        name: $("pName").value.trim(),
+        spec: $("pSpec").value.trim(),
+        category: $("pCategory").value.trim(),
+        location: $("pLocation").value.trim(),
+        unit: $("pUnit").value.trim(),
+        opening: Number($("pOpening").value || 0),
+        threshold: $("pThreshold").value === ""
+            ? null
+            : Number($("pThreshold").value)
+    };
+
+    if (!payload.name) {
+        toast("请填写商品名称");
+        return;
+    }
+
+    try {
+        const result = await api("/api/products", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        if (pendingProductPhoto) {
+            try { await uploadPendingPhoto(result.id); }
+            catch (uploadError) {
+                toast("商品资料已保存；" + uploadError.message);
+                await loadAllProducts(); await loadProducts();
+                return;
+            }
+        }
+        toast(`保存成功：${result.id}`);
+
+        closeProduct();
+
+        await loadAllProducts();
+        await loadProductOptions();
+        await loadProducts();
+        await loadSummary();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function disableProduct(id) {
+    if (!confirm(`确定停用商品 ${id}？`)) return;
+
+    try {
+        await api(
+            "/api/products/" + encodeURIComponent(id),
+            { method: "DELETE" }
+        );
+
+        toast("商品已停用");
+
+        await loadAllProducts();
+        await loadProductOptions();
+        await loadProducts();
+        await loadSummary();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+// ============================================================
+// 日常登记商品搜索与明细
+// ============================================================
+
+let opRowCounter = 0;
+function addOpRow() {
+    const row = document.createElement("div");
+    row.className = "op-row";
+    const searchId = "opSearch" + (++opRowCounter);
+
+    row.innerHTML = `
+        <div class="op-search-wrap">
+            <div style="display:flex;gap:5px">
+                <input id="${searchId}" class="field op-search"
+                    placeholder="搜索 ID / 条码 / 品牌 / 品名 / 规格"
+                    autocomplete="off" style="min-width:0;flex:1">
+                <button class="btn small" type="button" onclick="startBarcodeScan('${searchId}')">📷</button>
+            </div>
+            <div class="op-suggestions"></div>
+        </div>
+
+        <div class="product-photo-slot" aria-label="商品图片">${emptyProductPhoto()}</div>
+        <input class="field op-id readonly"
+            readonly aria-label="商品 ID" placeholder="商品 ID">
+        <input class="field op-barcode readonly"
+            readonly aria-label="条形码" placeholder="条形码">
+        <input class="field op-stock readonly"
+            readonly aria-label="当前库存" placeholder="当前库存">
+
+        <input class="field op-brand readonly"
+            readonly aria-label="品牌" placeholder="品牌">
+
+        <input class="field op-name readonly"
+            readonly aria-label="品名" placeholder="品名">
+
+        <input class="field op-spec readonly"
+            readonly aria-label="规格" placeholder="规格">
+
+        <input class="field op-location readonly"
+            readonly aria-label="存放位置" placeholder="存放位置">
+
+        <input class="field op-qty"
+            aria-label="数量 / 实盘" inputmode="decimal" type="number"
+            min="0"
+            step="0.01"
+            placeholder="数量 / 实盘">
+
+        <input class="field op-unit readonly"
+            readonly aria-label="单位" placeholder="单位">
+
+        <input class="field op-note"
+            aria-label="备注" placeholder="备注">
+
+        <button class="btn small danger"
+            title="删除明细">×</button>
+    `;
+
+    $("opRows").appendChild(row);
+
+    const search = row.querySelector(".op-search");
+
+    search.addEventListener("input", () => {
+        searchOp(search);
+    });
+
+    search.addEventListener("keydown", event => {
+        handleOpSearchKey(event, search);
+    });
+
+    search.addEventListener("focus", () => {
+        if (search.value.trim()) searchOp(search);
+    });
+
+    row.querySelector(".btn.danger").addEventListener("click", () => {
+        row.remove();
+        updateOpCount();
+    });
+
+    updateOpCount();
+    search.focus();
+}
+
+
+function searchOp(input) {
+    const row = input.closest(".op-row");
+    const box = row.querySelector(".op-suggestions");
+    const keyword = input.value.trim().toLowerCase();
+
+    row.dataset.productId = "";
+
+    row.querySelector(".product-photo-slot").innerHTML = emptyProductPhoto();
+    row.querySelector(".op-id").value = "";
+    row.querySelector(".op-barcode").value = "";
+    row.querySelector(".op-stock").value = "";
+    row.querySelector(".op-brand").value = "";
+    row.querySelector(".op-name").value = "";
+    row.querySelector(".op-spec").value = "";
+    row.querySelector(".op-location").value = "";
+    row.querySelector(".op-unit").value = "";
+
+    if (!keyword) {
+        box.classList.remove("show");
+        box.innerHTML = "";
+        return;
+    }
+
+    const matches = allProducts.filter(product => {
+        const searchable = [
+            product.id,
+            product.barcode,
+            product.brand,
+            product.name,
+            product.spec,
+            product.category,
+            product.location
+        ].join(" ").toLowerCase();
+
+        return searchable.includes(keyword);
+    }).slice(0, 30);
+
+    if (!matches.length) {
+        box.innerHTML = `
+            <div class="op-suggestion">
+                <strong>没有找到匹配商品</strong>
+                <small>请检查商品 ID、品牌、品名或规格</small>
+            </div>
+        `;
+        box.classList.add("show");
+        return;
+    }
+
+    box.innerHTML = matches.map((product, index) => `
+        <div class="op-suggestion"
+            data-product-id="${esc(product.id)}"
+            data-index="${index}">
+            <span class="photo-inline">${productPhoto(product, "small")}<strong>${esc(product.id)} · ${esc(product.name)}</strong></span>
+            <small>
+                ${esc(product.barcode || "无条码")}
+                · ${esc(product.brand || "无品牌")}
+                · ${esc(product.spec || "无规格")}
+                · 位置 ${esc(product.location || "未设置")}
+                · 库存 ${fmt(product.stock)} ${esc(product.unit)}
+            </small>
+        </div>
+    `).join("");
+
+    box.classList.add("show");
+
+    box.querySelectorAll(".op-suggestion[data-product-id]")
+        .forEach(element => {
+            element.addEventListener("click", () => {
+                chooseOpProduct(
+                    input,
+                    element.dataset.productId
+                );
+            });
+        });
+}
+
+
+function handleOpSearchKey(event, input) {
+    const box = input.closest(".op-row")
+        .querySelector(".op-suggestions");
+
+    const items = [
+        ...box.querySelectorAll(".op-suggestion[data-product-id]")
+    ];
+
+    if (!items.length) return;
+
+    let current = items.findIndex(
+        item => item.classList.contains("active")
+    );
+
+    if (event.key === "ArrowDown") {
+        event.preventDefault();
+
+        current = Math.min(current + 1, items.length - 1);
+
+        items.forEach(item => item.classList.remove("active"));
+        items[current].classList.add("active");
+        items[current].scrollIntoView({block: "nearest"});
+    }
+
+    if (event.key === "ArrowUp") {
+        event.preventDefault();
+
+        current = Math.max(current - 1, 0);
+
+        items.forEach(item => item.classList.remove("active"));
+        items[current].classList.add("active");
+        items[current].scrollIntoView({block: "nearest"});
+    }
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+
+        const target = current >= 0
+            ? items[current]
+            : items[0];
+
+        chooseOpProduct(
+            input,
+            target.dataset.productId
+        );
+    }
+
+    if (event.key === "Escape") {
+        box.classList.remove("show");
+    }
+}
+
+
+function chooseOpProduct(input, productId) {
+    const product = allProducts.find(
+        item => item.id === productId
+    );
+
+    if (!product) {
+        toast("商品不存在或已经停用");
+        return;
+    }
+
+    const row = input.closest(".op-row");
+
+    row.dataset.productId = product.id;
+
+    input.value = `${product.id} | ${product.name}`;
+
+    row.querySelector(".product-photo-slot").innerHTML = productPhoto(product, "small");
+    row.querySelector(".op-id").value = product.id;
+    row.querySelector(".op-barcode").value = product.barcode ?? "";
+    row.querySelector(".op-stock").value = `${fmt(product.stock)} ${product.unit || ""}`.trim();
+    row.querySelector(".op-brand").value = product.brand || "";
+    row.querySelector(".op-name").value = product.name || "";
+    row.querySelector(".op-spec").value = product.spec || "";
+    row.querySelector(".op-location").value = product.location || "";
+    row.querySelector(".op-unit").value = product.unit || "";
+
+    row.querySelector(".op-suggestions").classList.remove("show");
+
+    row.querySelector(".op-qty").focus();
+
+    toast(
+        `已选择：${product.name} · 库存 ${fmt(product.stock)} ${product.unit || ""}`
+    );
+}
+
+
+function updateOpCount() {
+    $("opCount").textContent =
+        `共 ${$("opRows").children.length} 条明细`;
+}
+
+
+function resetOp() {
+    $("opRows").innerHTML = "";
+
+    const typeSelect = $("opType");
+    typeSelect.value = [...typeSelect.options].find(option => !option.disabled)?.value || "";
+    $("opDoc").value = "";
+    $("opOperator").value = currentUser?.display_name || "";
+    $("opNote").value = "";
+
+    addOpRow();
+}
+
+
+let pendingInventorySubmission = null;
+
+async function submitDoc() {
+    const rows = [...$("opRows").children];
+    const items = [];
+
+    for (const row of rows) {
+        const productId = row.dataset.productId || "";
+        const quantityInput = row.querySelector(".op-qty");
+        const quantityValue = quantityInput.value;
+
+        if (!productId && !quantityValue) continue;
+
+        const product = allProducts.find(
+            item => item.id === productId
+        );
+
+        if (!product) {
+            toast("请先从搜索结果中选择商品");
+            return;
+        }
+
+        if (quantityValue === "") {
+            toast(`请填写 ${product.name} 的数量`);
+            return;
+        }
+
+        items.push({
+            product_id: product.id,
+            quantity: Number(quantityValue),
+            note: row.querySelector(".op-note").value
+        });
+    }
+
+    if (!items.length) {
+        toast("请先添加商品明细");
+        return;
+    }
+
+    const payload = {
+        type: $("opType").value,
+        external_no: $("opDoc").value,
+        operator: currentUser?.display_name || "",
+        note: $("opNote").value,
+        items
+    };
+
+    const fingerprint = JSON.stringify(payload);
+    if (pendingInventorySubmission && pendingInventorySubmission.fingerprint !== fingerprint) {
+        toast("上一笔提交结果尚未确认。请恢复原明细后重试，或先查库存流水核对。");
+        return;
+    }
+    pendingInventorySubmission ??= {
+        fingerprint,
+        id: globalThis.crypto?.randomUUID?.() || String(Date.now()) + Math.random(),
+    };
+    payload.request_id = pendingInventorySubmission.id;
+
+    const button = $("submitDocButton");
+    button.disabled = true;
+
+    try {
+        const result = await api("/api/submit", {
+            method: "POST",
+            body: JSON.stringify(payload)
+        });
+
+        toast(
+            result.unchanged
+                ? result.message
+                : `提交成功，单据号：${result.doc_no}`
+        );
+
+        pendingInventorySubmission = null;
+        resetOp();
+
+        await loadAll();
+
+    } catch (error) {
+        const definitive = error.status >= 400 && error.status < 500 && error.status !== 409;
+        if (definitive && !pendingInventorySubmission?.uncertain) pendingInventorySubmission = null;
+        else if (pendingInventorySubmission) pendingInventorySubmission.uncertain = true;
+        toast(error.message);
+
+    } finally {
+        button.disabled = false;
+    }
+}
+
+
+// 点击搜索框外部，关闭商品候选列表
+document.addEventListener("click", event => {
+    if (!event.target.closest(".op-search-wrap")) {
+        document.querySelectorAll(".op-suggestions").forEach(box => {
+            box.classList.remove("show");
+        });
+    }
+});
+
+
+// ============================================================
+// 库存流水与历史
+// ============================================================
+
+async function loadTransactions() {
+    try {
+        const query = $("txSearch").value;
+        const type = $("txType").value;
+        const start = $("txStart").value;
+        const end = $("txEnd").value;
+
+        const rows = await api(
+            `/api/transactions?q=${encodeURIComponent(query)}` +
+            `&type=${encodeURIComponent(type)}` +
+            `&start=${start}&end=${end}`
+        );
+
+        $("txRows").innerHTML = rows.map(item => `
+            <tr>
+                <td>${esc(item.id)}</td>
+                <td>${esc(item.time?.replace("T", " ") || "")}</td>
+                <td>${esc(item.type)}</td>
+                <td>${esc(item.doc_no)}</td>
+                <td>${esc(item.product_id)}</td>
+                <td><span class="photo-inline">${productPhoto({id:item.product_id,name:item.product_name,image_filename:item.image_filename}, "small")}<span>${esc(item.product_name)}</span></span></td>
+                <td>${fmt(item.qty_in)}</td>
+                <td>${fmt(item.qty_out)}</td>
+                <td>${fmt(item.qty_adjust)}</td>
+                <td>${esc(item.operator)}</td>
+                <td>${esc(item.note)}</td>
+            </tr>
+        `).join("") || emptyRow(11);
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function loadHistory() {
+    try {
+        const query = $("hisSearch").value;
+        const start = $("hisStart").value;
+        const end = $("hisEnd").value;
+
+        const rows = await api(
+            `/api/transactions?q=${encodeURIComponent(query)}` +
+            `&start=${start}&end=${end}`
+        );
+
+        $("hisRows").innerHTML = rows.map(item => `
+            <tr>
+                <td>${esc(item.time?.replace("T", " ") || "")}</td>
+                <td>${esc(item.type)}</td>
+                <td>${esc(item.doc_no)}</td>
+                <td>${esc(item.product_id)}</td>
+                <td><span class="photo-inline">${productPhoto({id:item.product_id,name:item.product_name,image_filename:item.image_filename}, "small")}<span>${esc(item.product_name)}</span></span></td>
+                <td>${fmt(item.qty_in)}</td>
+                <td>${fmt(item.qty_out)}</td>
+                <td>${fmt(item.qty_adjust)}</td>
+                <td>${esc(item.operator)}</td>
+                <td>${esc(item.note)}</td>
+            </tr>
+        `).join("") || emptyRow(10);
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+// ============================================================
+// 采购管理
+// ============================================================
+
+async function loadPurchase() {
+    try {
+        const rows = await api("/api/purchase");
+
+        $("purchaseCount").textContent =
+            `${rows.length} 项`;
+
+        $("purchaseRows").innerHTML = rows.map(product => `
+            <tr>
+                <td class="photo-cell" data-label="图片">${productPhoto(product)}</td>
+                <td data-label="商品 ID">${esc(product.id)}</td>
+                <td data-label="品牌">${esc(product.brand)}</td>
+                <td data-label="品名">${esc(product.name)}</td>
+                <td data-label="规格">${esc(product.spec)}</td>
+                <td data-label="分类">${esc(product.category)}</td>
+                <td data-label="当前库存"><b>${fmt(product.stock)}</b></td>
+                <td data-label="安全阈值">${fmt(product.effective_threshold)}</td>
+                <td data-label="待补数量">
+                    <span class="tag warn">
+                        ${fmt(Math.max(
+                            0,
+                            product.effective_threshold - product.stock
+                        ))}
+                    </span>
+                </td>
+                <td data-label="存放位置">${esc(product.location)}</td>
+            </tr>
+        `).join("") || emptyRow(10);
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+// ============================================================
+// 基础设置
+// ============================================================
+
+let settingsEditVersion = 0;
+let settingsDirty = false;
+let settingsSaving = false;
+function markSettingsDirty(event) {
+    if (!event.target.matches('input, select')) return;
+    settingsEditVersion++;
+    settingsDirty = true;
+}
+$("page-settings").addEventListener("input", markSettingsDirty);
+$("page-settings").addEventListener("change", markSettingsDirty);
+
+async function loadSettings() {
+    if (settingsDirty || settingsSaving) return;
+    const version = settingsEditVersion;
+    try {
+        const settings = await api("/api/settings", {cache:"no-store"});
+        if (version !== settingsEditVersion || settingsSaving) return;
+
+        $("setPort").value = settings.port;
+        $("setAccessIp").value = settings.access_ip || "";
+        $("setDomain").value = settings.domain || "";
+        $("setHttps").value = String(settings.https);
+        $("setCertFile").value = settings.ssl_certfile || "";
+        $("setKeyFile").value = settings.ssl_keyfile || "";
+
+        $("setThreshold").value = settings.default_threshold;
+        $("setBackupTime").value = settings.backup_time;
+        $("setAutoBackup").value = String(settings.auto_backup);
+        $("setKeep").value = settings.backup_keep_days;
+        $("setBackupDir").value = settings.backup_dir;
+        $("setPurchaseDir").value = settings.purchase_dir || "";
+
+        const parts = [
+            `自动检测 IP：<b>${esc(settings.lan_ip)}</b>`,
+            `当前访问 IP：<b>${esc(settings.access_ip)}</b>`,
+            `IP 访问地址：<b>${esc(settings.ip_url)}</b>`,
+            settings.access_url
+                ? `域名访问地址：<b>${esc(settings.access_url)}</b>`
+                : ""
+        ].filter(Boolean);
+
+        $("accessInfo").innerHTML =
+            parts.join("<br>") +
+            `<br><span class="muted">
+                域名解析需要路由器 DNS 或客户端 hosts 配置。
+                HTTPS 需要设备信任的证书。
+            </span>`;
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function saveSettings() {
+    if (settingsSaving) return;
+    const version = ++settingsEditVersion;
+    const button = $("page-settings").querySelector("button[onclick='saveSettings()']");
+    const payload = {
+        port: Number($("setPort").value),
+        domain: $("setDomain").value.trim(),
+        access_ip: $("setAccessIp").value.trim(),
+        https: $("setHttps").value === "true",
+        ssl_certfile: $("setCertFile").value.trim(),
+        ssl_keyfile: $("setKeyFile").value.trim(),
+
+        default_threshold: Number($("setThreshold").value),
+        backup_time: $("setBackupTime").value || "18:00",
+        auto_backup: $("setAutoBackup").value === "true",
+        backup_keep_days: Number($("setKeep").value),
+        backup_dir: $("setBackupDir").value,
+        purchase_dir: $("setPurchaseDir").value
+    };
+
+    settingsSaving = true;
+    button.disabled = true;
+    try {
+        const result = await api("/api/settings", {
+            method: "PUT",
+            body: JSON.stringify(payload)
+        });
+
+        if (result.restart_required) {
+            toast("设置已保存，请在服务器管理窗口点击“重新启动服务”");
+        } else {
+            toast("设置已保存");
+        }
+
+        if (version === settingsEditVersion) settingsDirty = false;
+    } catch (error) {
+        toast(error.message);
+    } finally {
+        settingsSaving = false;
+        button.disabled = false;
+    }
+    if (!settingsDirty) await loadSettings();
+}
+
+
+// ============================================================
+// 数据备份与恢复
+// ============================================================
+
+async function loadBackups() {
+    try {
+        const rows = await api("/api/backup");
+
+        $("backupRows").innerHTML = rows.map(item => `
+            <tr>
+                <td>${esc(item.bundle_archive || item.name)}</td>
+                <td>${((item.bundle_size || item.size) / 1024 / 1024).toFixed(2)} MB</td>
+                <td>${esc(item.time.replace("T", " "))}</td>
+                <td>
+                    ${item.bundle_archive ? `<a class="link" style="font-weight:800" href="/api/backup/download/${encodeURIComponent(item.bundle_archive)}">下载全量备份（ZIP）</a>` : `<span class="muted">旧版备份</span>`}
+                    <a class="link" href="/api/backup/download/${encodeURIComponent(item.name)}" style="margin-left:8px">下载旧版数据库</a>
+                    ${item.images_archive ? `<a class="link" href="/api/backup/download/${encodeURIComponent(item.images_archive)}" style="margin-left:8px">下载旧版图片包</a>` : ""}
+                </td>
+            </tr>
+        `).join("") || emptyRow(4);
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function makeBackup() {
+    try {
+        const result = await api("/api/backup", {
+            method: "POST",
+            body: JSON.stringify({})
+        });
+
+        toast(`完整备份成功：${result.bundle_archive || result.name}`);
+
+        await loadBackups();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function restoreDb() {
+    const file = $("restoreFile").files[0];
+
+    if (!file) {
+        toast("请选择门店完整备份 ZIP 或兼容旧版 DB 文件");
+        return;
+    }
+
+    if (!confirm(
+        file.name.toLowerCase().endsWith(".zip")
+            ? "恢复将替换数据库、商品图片和采购附件，保留当前页面、功能和服务设置。恢复完成后请用备份内的账号重新登录。确定继续？"
+            : "旧版 .db 文件仅恢复数据库。恢复完成后请用备份内的账号重新登录。确定继续？"
+    )) {
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const response = await fetch("/api/restore", {
+            method: "POST",
+            credentials: "same-origin",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.detail || "恢复失败");
+        }
+
+        toast(result.message);
+        if (result.login_required) {
+            setTimeout(() => location.reload(), 1800);
+            return;
+        }
+        await loadBackups();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+// ============================================================
+// Excel 导出
+// ============================================================
+
+let excelExportState = null;
+
+async function exportFile(kind, forceType) {
+    const state = {
+        base: `/api/export/${kind}`,
+        filters: new URLSearchParams({
+            q: kind === "products" ? $("prodSearch")?.value || "" : $("txSearch")?.value || "",
+            type: forceType || $("txType")?.value || "全部",
+            start: $("txStart")?.value || "",
+            end: $("txEnd")?.value || "",
+            status: $("prodStatus")?.value || "全部",
+            category: $("prodCategory")?.value || "全部",
+        }),
+    };
+    excelExportState = state;
+    try {
+        Object.assign(state, await api(state.base + "/options"));
+        if (excelExportState !== state) return;
+        $("excelExportTitle").textContent = `导出 Excel · ${state.title}`;
+        renderExcelTemplates(state.templates.find(template => template.is_default)?.id || "");
+        $("excelExportModal").classList.add("show");
+        $("excelTemplateChoice").focus();
+    } catch (error) {
+        if (excelExportState === state) toast(error.message);
+    }
+}
+
+function closeExcelExport() {
+    excelExportState = null;
+    $("excelExportModal").classList.remove("show");
+}
+
+function renderExcelTemplates(selectedId) {
+    const select = $("excelTemplateChoice");
+    select.replaceChildren(new Option("全部字段 / 自由选择", ""));
+    for (const template of excelExportState.templates) {
+        select.add(new Option(template.name + (template.is_default ? "（默认）" : ""), template.id));
+    }
+    select.value = selectedId;
+    setExcelExportBusy(excelExportState, false);
+    selectExcelTemplate(selectedId);
+}
+
+function selectExcelTemplate(id) {
+    const state = excelExportState;
+    if (!state || state.busy) return;
+    const template = state.templates.find(item => item.id === id);
+    const selected = new Set(template?.fields || state.fields.map(field => field.key));
+    $("excelTemplateName").value = template?.name || "";
+    $("excelTemplateDefault").checked = Boolean(template?.is_default);
+    $("excelUpdateTemplate").disabled = !template;
+    $("excelDeleteTemplate").disabled = !template;
+    $("excelFieldChoices").innerHTML = state.fields.map(({key, label}) =>
+        `<label class="permission-item"><input type="checkbox" value="${esc(key)}" ${selected.has(key) ? "checked" : ""}>${esc(label)}</label>`
+    ).join("");
+}
+
+function selectAllExcelFields(checked) {
+    $("excelFieldChoices").querySelectorAll("input").forEach(input => { input.checked = checked; });
+}
+
+function excelSelectedFields() {
+    return Array.from($("excelFieldChoices").querySelectorAll("input:checked"), input => input.value);
+}
+
+function setExcelExportBusy(state, busy) {
+    state.busy = busy;
+    if (excelExportState !== state) return;
+    $("excelTemplateChoice").disabled = busy;
+    $("excelDownloadButton").disabled = busy;
+}
+
+async function saveExcelTemplate(asNew) {
+    const state = excelExportState;
+    if (!state || state.busy) return;
+    const id = asNew ? "" : $("excelTemplateChoice").value;
+    if (!asNew && !id) return;
+    const fields = excelSelectedFields();
+    if (!fields.length) return toast("请至少选择一个字段");
+    const name = $("excelTemplateName").value.trim();
+    if (!name) return toast("请输入模板名称");
+    setExcelExportBusy(state, true);
+    try {
+        const saved = await api(state.base + "/templates" + (id ? "/" + encodeURIComponent(id) : ""), {
+            method: id ? "PUT" : "POST", body: JSON.stringify({
+                name, fields, is_default: $("excelTemplateDefault").checked,
+            }),
+        });
+        const replaced = state.templates.some(template => template.id === saved.id);
+        state.templates = state.templates.map(template => {
+            if (template.id === saved.id) return saved;
+            return saved.is_default ? {...template, is_default: false} : template;
+        });
+        if (!replaced) state.templates.push(saved);
+        setExcelExportBusy(state, false);
+        if (excelExportState === state) renderExcelTemplates(saved.id);
+        toast("导出模板已保存");
+    } catch (error) {
+        toast(error.message);
+    } finally {
+        setExcelExportBusy(state, false);
+    }
+}
+
+async function deleteExcelTemplate() {
+    const state = excelExportState;
+    const id = $("excelTemplateChoice").value;
+    if (!state || !id || state.busy || !confirm("确定删除当前导出模板？")) return;
+    setExcelExportBusy(state, true);
+    try {
+        await api(state.base + "/templates/" + encodeURIComponent(id), {method: "DELETE"});
+        state.templates = state.templates.filter(template => template.id !== id);
+        setExcelExportBusy(state, false);
+        if (excelExportState === state) renderExcelTemplates(state.templates.find(template => template.is_default)?.id || "");
+        toast("导出模板已删除");
+    } catch (error) {
+        toast(error.message);
+    } finally {
+        setExcelExportBusy(state, false);
+    }
+}
+
+async function downloadExcelExport() {
+    const state = excelExportState;
+    if (!state || state.busy) return;
+    const fields = excelSelectedFields();
+    if (!fields.length) return toast("请至少选择一个字段");
+    const params = new URLSearchParams(state.filters);
+    for (const field of fields) params.append("fields", field);
+    setExcelExportBusy(state, true);
+    try {
+        const response = await fetch(`${state.base}?${params}`, {credentials: "same-origin"});
+        if (!response.ok) {
+            const info = await response.json().catch(() => ({}));
+            throw new Error(info.detail || "导出失败，请重试");
+        }
+        const filename = response.headers.get("Content-Disposition")?.match(/filename\*=utf-8''([^;]+)/i)?.[1];
+        const url = URL.createObjectURL(await response.blob());
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename ? decodeURIComponent(filename) : `${state.title}.xlsx`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 30000);
+    } catch (error) {
+        toast(error.message);
+    } finally {
+        setExcelExportBusy(state, false);
+    }
+}
+
+// ============================================================
+// 人员管理
+// ============================================================
+
+let permissionDefinitions = [
+    ["dashboard", "首页看板"],
+    ["operation", "日常登记"],
+    ["products_view", "查看商品档案"],
+    ["products_manage", "新增、编辑、停用商品"],
+    ["transactions_view", "查看库存流水"],
+    ["purchase_view", "查看采购管理"],
+    ["settings_view", "查看基础设置"],
+    ["settings_manage", "修改系统设置"],
+    ["backup_view", "查看和下载备份"],
+    ["backup_manage", "创建数据库备份"],
+    ["backup_restore", "恢复数据库"],
+    ["export", "导出 Excel"],
+    ["schedule_view", "查看每日排班"],
+    ["schedule_manage", "管理全部排班"],
+    ["schedule_self_manage", "修改本人当天排班"],
+    ["schedule_approve", "审批员工休息与换班申请"],
+    ["notifications_view", "查看统一消息中心"],
+    ["audit_view", "查看操作审计日志"],
+    ["devices_view", "查看在线设备"],
+    ["customers_view", "查看客户档案"],
+    ["customers_manage", "管理客户档案"],
+    ["waitlist_manage", "管理候补预约"],
+    ["reports_view", "查看经营报表"]
+];
+
+
+// The permission editor gets its module/action definitions from the server.
+// New web modules appear automatically after a trusted backend registration.
+let permissionCatalogLoaded = false;
+let permissionPresets = {};
+let permissionAliases = {};
+let permissionModuleTitles = {core: '门店系统现有功能'};
+async function loadPermissionCatalog() {
+    permissionCatalogLoaded = false;
+    const catalog = await api('/api/permissions/catalog');
+    if (catalog?.schema_version !== 1 || !Array.isArray(catalog.modules)) {
+        throw new Error('服务器权限目录版本不兼容，已禁止编辑规则组');
+    }
+    const items = [];
+    const seen = new Set();
+    const forbidden = new Set();
+    const titles = {};
+    for (const module of catalog.modules) {
+        if (!module || typeof module.id !== 'string' || !Array.isArray(module.permissions)) {
+            throw new Error('服务器权限目录不完整');
+        }
+        titles[module.id] = String(module.label || module.id);
+        for (const permission of module.permissions) {
+            if (!permission || typeof permission.key !== 'string' || typeof permission.label !== 'string') {
+                throw new Error('服务器权限目录包含无效定义');
+            }
+            if (seen.has(permission.key)) throw new Error('服务器权限目录包含重复的权限编号');
+            seen.add(permission.key);
+            items.push([permission.key, permission.label, module.id]);
+            if (!permission.group_assignable) forbidden.add(permission.key);
+        }
+    }
+    permissionPresets = await api("/api/permission-groups/templates");
+    permissionDefinitions = items;
+    permissionAliases = catalog.legacy_aliases || {};
+    permissionModuleTitles = titles;
+    groupForbiddenKeys.clear();
+    for (const key of forbidden) groupForbiddenKeys.add(key);
+    permissionCatalogLoaded = true;
+}
+
+let scheduleStaffOptions = [];
+let scheduleStaffLinks = [];
+async function loadScheduleStaffBindings() {
+    try {
+        const state = await api("/api/schedule/state");
+        scheduleStaffOptions = state.initialized ? (state.payload.staff || []) : [];
+        scheduleStaffLinks = await api("/api/schedule/staff-links");
+    } catch (error) {
+        scheduleStaffOptions = [];
+        scheduleStaffLinks = [];
+    }
+}
+
+let permissionGroupsCache = [];
+let editingPermissionGroupId = null;
+let permissionGroupSaving = false;
+function effectiveGroupActions(permissions) {
+    const actions = {...permissions};
+    for (const [alias, keys] of Object.entries(permissionAliases)) {
+        if (actions[alias]) for (const key of keys) actions[key] = true;
+        delete actions[alias];
+    }
+    return actions;
+}
+function retainUnchangedGroupAliases(permissions, original) {
+    for (const [alias, actions] of Object.entries(permissionAliases)) {
+        if (original?.[alias] && actions.every(key => permissions[key])) {
+            permissions[alias] = true;
+        }
+    }
+    return permissions;
+}
+const groupForbiddenKeys = new Set(["backup_restore", "backup_manage", "settings_manage"]);
+function userForGroup(userId) { return usersCache.find(user => user.id === userId); }
+function groupStaffChip(user) {
+    // Drag works on desktop; the select below is the accessible touch fallback.
+    return `<span class="permission-user-chip" draggable="true" ondragstart="dragPermissionUser(event, '${user.id}')">${esc(user.display_name)} <small>${esc(user.username)}</small></span>`;
+}
+function dragPermissionUser(event, userId) { event.dataTransfer.setData("text/plain", userId); event.dataTransfer.effectAllowed = "copy"; }
+async function dropPermissionUser(event, groupId) {
+    event.preventDefault();
+    event.currentTarget.classList.remove("drag-over");
+    const userId = event.dataTransfer.getData("text/plain");
+    if (userForGroup(userId)) await addPermissionMember(groupId, userId);
+}
+async function addPermissionMember(groupId, userId) {
+    if (!groupId || !userId) return;
+    try {
+        await api(`/api/permission-groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(userId)}`, {method:"PUT"});
+        await loadUsers();
+        toast("员工已加入权限组");
+    } catch (error) { toast(error.message); }
+}
+async function removePermissionMember(groupId, userId) {
+    try {
+        await api(`/api/permission-groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(userId)}`, {method:"DELETE"});
+        await loadUsers();
+        toast("员工已从规则组移出，权限已更新");
+    } catch (error) { toast(error.message); }
+}
+function renderPermissionGroups() {
+    const staff = usersCache.filter(u => u.role !== "admin" && u.enabled);
+    $("permissionGroupUserPool").innerHTML = staff.map(groupStaffChip).join("") || "暂无可分配员工";
+    $("permissionGroupCards").innerHTML = permissionGroupsCache.map(group => {
+        const members = (group.member_ids || []).map(userForGroup).filter(Boolean);
+        const available = staff.filter(u => !(group.member_ids || []).includes(u.id));
+        const count = Object.values(effectiveGroupActions(group.permissions)).filter(Boolean).length;
+        return `<section class="permission-group-card" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="dropPermissionUser(event,'${group.id}')">
+            <div class="permission-group-head"><strong>${esc(group.name)}</strong><small>${members.length} 人 · ${count} 项权限</small></div>
+            <div class="permission-group-members">${members.map(u=>`<span class="permission-member-pill">${esc(u.display_name)}<button type="button" aria-label="移出 ${esc(u.display_name)}" onclick="removePermissionMember('${group.id}','${u.id}')">×</button></span>`).join("") || '<span class="muted">拖入员工或使用下方选择</span>'}</div>
+            <div class="permission-group-assign"><select class="field" id="pgSelect-${group.id}" aria-label="选择员工加入 ${esc(group.name)}"><option value="">选择员工加入</option>${available.map(u=>`<option value="${u.id}">${esc(u.display_name)}</option>`).join("")}</select><button type="button" class="btn small" onclick="addPermissionMember('${group.id}',$('pgSelect-${group.id}').value)">加入</button></div>
+            <div class="permission-group-actions"><button type="button" class="btn small" onclick="openPermissionGroupModal('${group.id}')">编辑权限</button><button type="button" class="btn small" onclick="copyPermissionGroup('${group.id}')">复制</button><button type="button" class="btn small danger" onclick="deletePermissionGroup('${group.id}')">删除规则</button></div>
+          </section>`;
+    }).join("") || '<p class="muted">还没有规则组。可以先创建“前台接待”“库存管理”等规则。</p>';
+}
+function openPermissionGroupModal(groupId = null) {
+    editingPermissionGroupId = groupId;
+    const group = permissionGroupsCache.find(g => g.id === groupId);
+    $("permissionGroupModalTitle").textContent = group ? "编辑权限规则" : "新建权限规则";
+    $("permissionGroupName").value = group?.name || "";
+    $("permissionGroupPreset").value = "";
+    if (!permissionCatalogLoaded) {
+        toast('权限目录未成功加载，禁止编辑规则组以免丢失扩展权限');
+        return;
+    }
+    const sections = new Map();
+    const granted = effectiveGroupActions(group?.permissions);
+    permissionDefinitions.filter(([key]) => !groupForbiddenKeys.has(key) && !Object.prototype.hasOwnProperty.call(permissionAliases, key)).forEach(([key,label,moduleId]) => {
+        if (!sections.has(moduleId)) sections.set(moduleId, []);
+        sections.get(moduleId).push([key,label]);
+    });
+    $("permissionGroupPermissions").innerHTML = [...sections.entries()].map(([moduleId, items]) =>
+        `<fieldset style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:6px 0 12px;min-width:0">
+          <legend style="font-weight:700;padding:0 5px">${esc(permissionModuleTitles[moduleId] || moduleId)}</legend>
+          <div class="permission-grid">${items.map(([key,label]) =>
+            `<label class="permission-item"><input type="checkbox" data-group-permission="${esc(key)}" ${granted[key] ? 'checked' : ''}>${esc(label)}</label>`
+          ).join('')}</div>
+        </fieldset>`
+    ).join('');
+    $("permissionGroupModal").classList.add("show");
+}
+function applyGroupPreset(preset) {
+    if (!Array.isArray(permissionPresets[preset])) return;
+    const grants = effectiveGroupActions(Object.fromEntries(permissionPresets[preset].map(key => [key, true])));
+    document.querySelectorAll("[data-group-permission]").forEach(input => {input.checked=Boolean(grants[input.dataset.groupPermission]);});
+}
+async function copyPermissionGroup(groupId) {
+    const source = permissionGroupsCache.find(g => g.id === groupId);
+    if (!source) return;
+    const name = prompt("新规则名称", `${source.name} - 副本`);
+    if (!name?.trim()) return;
+    try {
+        await api("/api/permission-groups", {method:"POST",body:JSON.stringify({name:name.trim(),permissions:source.permissions})});
+        await loadUsers();toast("规则已复制，可继续拖入员工");
+    } catch(error){toast(error.message);}
+}
+function closePermissionGroupModal() { $("permissionGroupModal").classList.remove("show"); }
+async function savePermissionGroup() {
+    if (!permissionCatalogLoaded) return toast('权限目录未加载，禁止保存规则组');
+    if (permissionGroupSaving) return;
+    const name = $("permissionGroupName").value.trim();
+    if (!name) return toast("请输入规则名称");
+    const permissions = {};
+    document.querySelectorAll("[data-group-permission]").forEach(input=>{ permissions[input.dataset.groupPermission] = input.checked; });
+    const original = permissionGroupsCache.find(g => g.id === editingPermissionGroupId);
+    retainUnchangedGroupAliases(permissions, original?.permissions);
+    permissionGroupSaving = true;
+    try {
+        await api(editingPermissionGroupId ? `/api/permission-groups/${editingPermissionGroupId}` : "/api/permission-groups", {method:editingPermissionGroupId ? "PATCH":"POST", body:JSON.stringify({name,permissions})});
+        closePermissionGroupModal(); await loadUsers(); toast("规则已保存，成员权限立即更新");
+    } catch(error){ toast(error.message); }
+    finally { permissionGroupSaving = false; }
+}
+async function deletePermissionGroup(groupId) {
+    const group = permissionGroupsCache.find(g => g.id === groupId);
+    if (!confirm(`删除权限规则“${group?.name || ''}”？组内员工将失去由该组授予的权限。`)) return;
+    try { await api(`/api/permission-groups/${groupId}`, {method:"DELETE"}); await loadUsers(); toast("规则已删除"); }
+    catch(error){toast(error.message);}
+}
+
+async function saveSessionPolicy() {
+    const field = $("sessionPolicyDays");
+    if (!field.reportValidity()) return;
+    try {
+        await api("/api/users/session-policy", {method:"PUT", body:JSON.stringify({
+            days: field.value === "" ? null : Number(field.value)
+        })});
+        toast("保持登录期限已保存");
+    } catch (error) { toast(error.message); }
+}
+
+async function loadUsers() {
+    try {
+        if (currentUser?.role !== "admin") {
+            toast("只有管理员可以管理人员");
+            return;
+        }
+
+        await loadPermissionCatalog();
+        $("sessionPolicyDays").value = (await api("/api/users/session-policy")).days ?? "";
+        usersCache = await api("/api/users");
+        permissionGroupsCache = await api("/api/permission-groups");
+        renderPermissionGroups();
+
+        $("userRows").innerHTML = usersCache.map(user => {
+            const permissionCount = Object.values(
+                user.permissions || {}
+            ).filter(Boolean).length;
+
+            return `
+                <tr>
+                    <td><b>${esc(user.username)}</b></td>
+                    <td>${esc(user.display_name)}</td>
+                    <td>${user.role === "admin" ? "管理员" : "普通人员"}</td>
+                    <td>
+                        <span class="tag ${!user.enabled ? "bad" : user.must_set_password ? "warn" : "ok"}">
+                            ${!user.enabled ? "已禁用" : user.must_set_password ? "待首次设置密码" : "启用"}
+                        </span>
+                    </td>
+                    <td>
+                        ${user.role === "admin"
+                            ? "全部权限"
+                            : permissionCount + " 项"}
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="btn small"
+                                onclick="showUserModal('${user.id}')">
+                                编辑资料
+                            </button>
+
+                            ${user.must_set_password ? `
+                                <button class="btn small"
+                                    onclick="regenerateActivationCode('${user.id}')">
+                                    重新生成首次登录码
+                                </button>
+                            ` : `
+                                <button class="btn small"
+                                    onclick="resetUserPassword('${user.id}')">
+                                    重置密码
+                                </button>
+                            `}
+
+                            <button class="btn small danger"
+                                onclick="toggleUser('${user.id}',${!user.enabled})">
+                                ${user.enabled ? "禁用" : "启用"}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("") || emptyRow(6);
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function loadDefaultActivationCode() {
+    const checkbox = $("staffUseDefaultCode");
+    checkbox.checked = false;
+    checkbox.disabled = true;
+    try {
+        const {configured} = await api("/api/users/activation-default", {cache: "no-store"});
+        checkbox.disabled = !configured;
+        checkbox.checked = configured;
+    } catch (error) {
+        toast("读取默认登录码状态失败：" + error.message);
+    }
+}
+
+async function changeDefaultActivationCode(clear = false) {
+    const code = clear ? null : prompt("设置默认首次登录码（8 位数字）。请仅通过私下渠道转交员工。");
+    if (!clear && code === null) return;
+    if (clear && !confirm("清除默认登录码？已分配给员工的登录码仍然有效。")) return;
+    if (!clear && !/^[0-9]{8}$/.test(code)) {
+        toast("首次登录码必须为 8 位数字");
+        return;
+    }
+    try {
+        await api("/api/users/activation-default", {
+            method: "PUT", body: JSON.stringify({activation_code: code})
+        });
+        await loadDefaultActivationCode();
+        toast(clear ? "默认首次登录码已清除" : "默认首次登录码已保存");
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+async function showUserModal(id = null) {
+    await loadScheduleStaffBindings();
+    currentEditingUserId = id;
+
+    const user = id
+        ? usersCache.find(item => item.id === id)
+        : null;
+
+    $("userModalTitle").textContent =
+        user ? "编辑人员资料及规则组" : "注册人员";
+
+    $("userUsername").value = user?.username || "";
+    $("userUsername").disabled = !!user;
+
+    $("userDisplayName").value =
+        user?.display_name || "";
+
+    $("userPasswordBox").style.display =
+        user ? "none" : "";
+
+    $("userGroupChoices").innerHTML = user?.role === "admin"
+        ? '<span class="muted">管理员权限由系统保护，不能加入普通权限规则组。</span>'
+        : permissionGroupsCache.map(group =>
+            `<label class="permission-item"><input type="checkbox" data-user-group="${esc(group.id)}" ${user?.group_ids?.includes(group.id) ? "checked" : ""}>${esc(group.name)}</label>`
+        ).join("") || '<span class="muted">暂无权限规则。可以先在人员管理中创建规则。</span>';
+    const linked = scheduleStaffLinks.find(x => x.user_id === id)?.staff_id || "";
+    $("userScheduleStaff").innerHTML = '<option value="">不绑定</option>' + scheduleStaffOptions.map(st => `<option value="${esc(st.id)}">${esc(st.name)}</option>`).join("");
+    $("userScheduleStaff").value = linked;
+
+    $("staffActivationCode").value = "";
+    if (!user) await loadDefaultActivationCode();
+    $("userModal").classList.add("show");
+}
+
+
+function closeUserModal() {
+    $("userModal").classList.remove("show");
+}
+
+
+async function saveUser() {
+    const username = $("userUsername").value.trim();
+    const displayName = $("userDisplayName").value.trim();
+
+    const groupIds = [...document.querySelectorAll("[data-user-group]:checked")].map(item=>item.dataset.userGroup);
+
+    if (!displayName) {
+        toast("请填写人员姓名");
+        return;
+    }
+
+    try {
+        let savedUserId = currentEditingUserId;
+        if (currentEditingUserId) {
+            await api(`/api/users/${currentEditingUserId}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    display_name: displayName
+                })
+            });
+
+            toast("人员资料已更新");
+
+        } else {
+            if (username.length < 3) {
+                toast("登录账号至少 3 个字符");
+                return;
+            }
+
+            const code = $("staffActivationCode").value.trim();
+            if (code && !/^[0-9]{8}$/.test(code)) {
+                toast("首次登录码必须为 8 位数字");
+                return;
+            }
+            const created = await api("/api/users", {
+                method: "POST",
+                body: JSON.stringify({
+                    username,
+                    display_name: displayName,
+                    group_ids: groupIds,
+                    activation_code: code || null,
+                    use_default_activation_code: !code && $("staffUseDefaultCode").checked
+                })
+            });
+            savedUserId = created.id;
+
+            if (created.activation_code) {
+                window.alert(
+                    `人员注册成功！\n\n首次登录码：${created.activation_code}\n\n请将此登录码交给对应员工。员工首次登录时请把此登录码填入密码框，随后自行设置密码。\n\n请妥善转交，不要公开张贴。`
+                );
+            } else if (created.used_default_activation_code) {
+                toast("人员注册成功，已使用默认首次登录码");
+            } else {
+                toast("人员注册成功");
+            }
+        }
+
+        if (currentEditingUserId && savedUserId) {
+            const prev = usersCache.find(u => u.id === savedUserId)?.group_ids || [];
+            for (const groupId of groupIds.filter(x => !prev.includes(x))) {
+                await api(`/api/permission-groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(savedUserId)}`, {method:"PUT"});
+            }
+            for (const groupId of prev.filter(x => !groupIds.includes(x))) {
+                await api(`/api/permission-groups/${encodeURIComponent(groupId)}/members/${encodeURIComponent(savedUserId)}`, {method:"DELETE"});
+            }
+        }
+        const staffId = $("userScheduleStaff").value;
+        if (savedUserId) {
+            if (staffId) await api("/api/schedule/staff-links", {method:"PUT", body:JSON.stringify({user_id:savedUserId,staff_id:staffId})});
+            else await api(`/api/schedule/staff-links/${savedUserId}`, {method:"DELETE"});
+        }
+        closeUserModal();
+
+        await loadUsers();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function toggleUser(id, enabled) {
+    const action = enabled ? "启用" : "禁用";
+
+    if (!confirm(`确定${action}这个人员账号吗？`)) {
+        return;
+    }
+
+    try {
+        await api(`/api/users/${id}`, {
+            method: "PATCH",
+            body: JSON.stringify({enabled})
+        });
+
+        toast(`账号已${action}`);
+
+        await loadUsers();
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function regenerateActivationCode(id) {
+    const code = prompt("输入新的 8 位首次登录码，留空随机生成。旧码和首次登录会话将失效。");
+    if (code === null) return;
+    if (code && !/^[0-9]{8}$/.test(code)) {
+        toast("首次登录码必须为 8 位数字");
+        return;
+    }
+    try {
+        const result = await api(`/api/users/${id}/activation-code`, {
+            method: "POST",
+            body: JSON.stringify({activation_code: code || null})
+        });
+        window.alert(`新的首次登录码：${result.activation_code}\n请私下转交员工，并让员工填入登录密码框。`);
+        await loadUsers();
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+async function resetUserPassword(id) {
+    const password = prompt(
+        "请输入新的登录密码（至少 8 位）："
+    );
+
+    if (password === null) return;
+
+    if (password.length < 8) {
+        toast("密码至少需要 8 位");
+        return;
+    }
+
+    if (!confirm(
+        "重置后，该人员原有登录会话将全部失效。继续吗？"
+    )) {
+        return;
+    }
+
+    try {
+        await api(`/api/users/${id}/password`, {
+            method: "POST",
+            body: JSON.stringify({password})
+        });
+
+        toast("密码重置成功");
+
+    } catch (error) {
+        toast(error.message);
+    }
+}
+
+
+// ============================================================
+// 统一消息中心与在线设备心跳
+// ============================================================
+function getDeviceIdentity() {
+    let id = localStorage.getItem("storeInventoryDeviceId");
+    if (!id) {
+        id = (crypto?.randomUUID ? crypto.randomUUID() : `device-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+        localStorage.setItem("storeInventoryDeviceId", id);
+    }
+    return id;
+}
+
+async function sendDeviceHeartbeat() {
+    if (!currentUser || document.hidden) return;
+    const ua = navigator.userAgent || "";
+    const platform = /Android/i.test(ua) ? "Android" : /iPhone|iPad|iPod/i.test(ua) ? "iOS" : /Windows/i.test(ua) ? "Windows" : /Mac/i.test(ua) ? "macOS" : "Web";
+    try {
+        await api("/api/devices/heartbeat", {method:"POST", body:JSON.stringify({device_id:getDeviceIdentity(), device_name:`${platform} 浏览器`, platform})});
+    } catch (error) { console.debug("device heartbeat unavailable", error); }
+}
+
+function startDeviceHeartbeat() {
+    sendDeviceHeartbeat();
+    if (deviceHeartbeatTimer) clearInterval(deviceHeartbeatTimer);
+    deviceHeartbeatTimer = setInterval(sendDeviceHeartbeat, 60000);
+}
+
+async function refreshNotificationCount() {
+    if (!hasPermission("notifications_view")) return;
+    try {
+        notificationCache = await api("/api/notifications?limit=100");
+        const unread = notificationCache.filter(item => !item.read_at).length;
+        const badge = $("notificationCount");
+        if (badge) badge.textContent = String(unread);
+    } catch (error) { console.debug("notification count unavailable", error); }
+}
+
+async function openNotifications() {
+    const panel = $("notificationPanel");
+    panel.style.display = "block";
+    try {
+        notificationCache = await api("/api/notifications?limit=100");
+        $("notificationList").innerHTML = notificationCache.length ? notificationCache.map(item => `<div style="padding:10px 2px;border-bottom:1px solid var(--line);opacity:${item.read_at?'.65':'1'}"><b>${esc(item.title)}</b><div style="font-size:12px;margin-top:3px">${esc(item.body||"")}</div><small class="muted">${esc(item.created_at)}</small>${!item.read_at?` <button class="btn small" onclick="markOneNotificationRead('${esc(item.id)}')">标记已读</button>`:""}</div>`).join("") : "暂无消息";
+        await refreshNotificationCount();
+    } catch (error) { $("notificationList").textContent = error.message; }
+}
+function closeNotifications(){ $("notificationPanel").style.display="none"; }
+async function markOneNotificationRead(id){ await api(`/api/notifications/${encodeURIComponent(id)}/read`,{method:"POST"}); await openNotifications(); }
+async function markAllNotificationsRead(){ await api("/api/notifications/read-all",{method:"POST"}); await openNotifications(); }
+
+// ============================================================
+// 运营监控中心：按服务端权限逐项加载，不向无权限账号暴露数据。
+// ============================================================
+let controlCenterTab = "alerts";
+async function loadControlCenter(){
+    const tabs={alerts:'ccTabAlerts',devices:'ccTabDevices',audit:'ccTabAudit',customers:'ccTabCustomers',workload:'ccTabWorkload',waitlist:'ccTabWaitlist',reports:'ccTabReports'};
+    if($(tabs[controlCenterTab])?.hidden)controlCenterTab=Object.keys(tabs).find(key=>!$(tabs[key])?.hidden)||controlCenterTab;
+    await loadControlTab(controlCenterTab);
+}
+async function loadControlTab(tab){
+    controlCenterTab=tab;const target=$("controlCenterContent");target.textContent="正在加载…";
+    try{
+        let rows=[];
+        if(tab==="alerts"){const r=await api("/api/inventory/alerts");rows=r.items||[];target.innerHTML=rows.length?`<h3>低库存商品（${r.count}）</h3><div class="table-wrap"><table><thead><tr><th>商品编号</th><th>商品名称</th><th>当前库存</th><th>预警阈值</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.id)}</td><td>${esc(x.name)}</td><td>${esc(x.stock)}</td><td>${esc(x.effective_threshold)}</td></tr>`).join("")}</tbody></table></div>`:"当前没有低库存商品。";}
+        else if(tab==="devices"){rows=await api("/api/devices");target.innerHTML=rows.length?`<div class="table-wrap"><table><thead><tr><th>设备</th><th>平台</th><th>账号</th><th>IP</th><th>最近在线</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.device_name)}</td><td>${esc(x.platform)}</td><td>${esc(x.display_name||x.username||"未知")}</td><td>${esc(x.ip_address)}</td><td>${esc(x.last_seen)}</td></tr>`).join("")}</tbody></table></div>`:"目前没有在线设备。";}
+        else if(tab==="audit"){rows=await api("/api/audit?limit=200");target.innerHTML=rows.length?`<div class="table-wrap"><table><thead><tr><th>时间</th><th>操作人</th><th>操作</th><th>对象</th><th>来源 IP</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.time||x.created_at||x.timestamp||"")}</td><td>${esc(x.actor_name||x.username||"")}</td><td>${esc(x.action||"")}</td><td>${esc(x.entity_type||"")} · ${esc(x.entity_id||"")}</td><td>${esc(x.ip_address||"")}</td></tr>`).join("")}</tbody></table></div>`:"暂无审计记录。";}
+        else if(tab==="customers"){await renderCustomerTab(target);}
+        else if(tab==="workload"){const now=new Date();const day=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;const r=await api(`/api/schedule/workload?date_from=${day}&date_to=${day}`);rows=r.items||[];target.innerHTML=rows.length?`<div class="table-wrap"><table><thead><tr><th>美容师</th><th>预约数</th><th>服务分钟</th><th>占用分钟</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.staff_name)}</td><td>${x.appointment_count}</td><td>${x.service_minutes}</td><td>${x.occupied_minutes}</td></tr>`).join("")}</tbody></table></div>`:"暂无工作负荷数据。";}
+        else if(tab==="waitlist"){rows=await api("/api/schedule/waitlist?status=all");target.innerHTML=rows.length?`<div class="table-wrap"><table><thead><tr><th>客户</th><th>手机尾号</th><th>期望日期</th><th>时间</th><th>状态</th><th>操作</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.customer_name)}</td><td>${esc(x.phone_tail||"")}</td><td>${esc(x.preferred_date||"")}</td><td>${esc(x.preferred_time||"")}</td><td>${esc(x.status)}</td><td>${x.status==="waiting"&&hasPermission("ext.waitlist.status_change")?`<button class="btn small" onclick="updateControlWaitlist('${esc(x.id)}','booked')">已安排</button> <button class="btn small" onclick="updateControlWaitlist('${esc(x.id)}','cancelled')">取消</button>`:"—"}</td></tr>`).join("")}</tbody></table></div>`:"暂无候补客户。";}
+        else if(tab==="reports"){const now=new Date(),today=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`,monthStart=`${today.slice(0,7)}-01`;const r=await api(`/api/reports/operations?date_from=${monthStart}&date_to=${today}`);const tx=r.inventory.transactions||[];target.innerHTML=`<h3>本月经营概览（${monthStart} 至 ${today}）</h3><div class="cards" style="margin:12px 0"><div class="stat"><div class="label">有效商品</div><div class="num">${r.inventory.active_products}</div></div><div class="stat"><div class="label">低库存商品</div><div class="num">${r.inventory.low_stock_products}</div></div><div class="stat"><div class="label">预约数量</div><div class="num">${r.appointments.count}</div></div><div class="stat"><div class="label">服务时长（分钟）</div><div class="num">${r.appointments.service_minutes}</div></div><div class="stat"><div class="label">客户档案</div><div class="num">${r.customers.total}</div></div><div class="stat"><div class="label">本期新增客户</div><div class="num">${r.customers.new_in_period}</div></div></div><h3>库存流水汇总</h3><div class="table-wrap"><table><thead><tr><th>类型</th><th>流水行数</th><th>入库数量</th><th>出库数量</th><th>盘点调整</th></tr></thead><tbody>${tx.map(x=>`<tr><td>${esc(x.type)}</td><td>${x.line_count}</td><td>${fmt(x.qty_in)}</td><td>${fmt(x.qty_out)}</td><td>${fmt(x.qty_adjust)}</td></tr>`).join("")||emptyRow(5)}</tbody></table></div><h3 style="margin-top:14px">美容师服务量</h3><div class="table-wrap"><table><thead><tr><th>美容师</th><th>预约数量</th><th>服务分钟</th></tr></thead><tbody>${r.appointments.staff.map(x=>`<tr><td>${esc(x.staff_name)}</td><td>${x.appointment_count}</td><td>${x.service_minutes}</td></tr>`).join("")||emptyRow(3)}</tbody></table></div>`;}
+    }catch(error){target.textContent=error.message||"读取失败";}
+}
+async function renderCustomerTab(target){
+    const canRead=hasPermission('ext.customers.read'), canCreate=hasPermission('ext.customers.create'), canUpdate=hasPermission('ext.customers.update'), canDelete=hasPermission('ext.customers.delete');
+    const rows=canRead?await api('/api/customers?limit=300'):[];
+    target.innerHTML=`<h3>客户档案</h3><div class="form-grid" id="ccCustomerForm" ${canCreate||canUpdate?'':'hidden'}><label>姓名<input class="field" id="ccCustomerName" maxlength="120"></label><label>手机尾号<input class="field" id="ccCustomerTail" maxlength="11" inputmode="numeric" ${hasPermission('ext.customers.phone_edit')?'':'disabled'}></label><label>备注<input class="field" id="ccCustomerNotes" maxlength="4000" ${hasPermission('ext.customers.notes_edit')?'':'disabled'}></label><div><button class="btn primary" id="ccSaveCustomer" ${canCreate?'':'hidden'}>保存客户</button> <button class="btn" id="ccCancelCustomer" hidden>取消编辑</button></div></div><div class="table-wrap"><table><thead><tr><th>姓名</th><th>手机尾号</th><th>备注</th><th>操作</th></tr></thead><tbody>${rows.map((x,i)=>`<tr><td>${esc(x.name)}</td><td>${esc(x.phone_tail||'')}</td><td>${esc(x.notes||'')}</td><td>${canUpdate?`<button class="btn small" data-customer-edit="${i}">编辑</button>`:''} ${canDelete?`<button class="btn small" data-customer-delete="${i}">删除</button>`:''}</td></tr>`).join('')}</tbody></table></div>${canRead?(rows.length?'':'暂无客户档案。'):'当前账号没有客户查询权限。'}`;
+    let selected=null;
+    const reset=()=>{selected=null;for(const id of ['ccCustomerName','ccCustomerTail','ccCustomerNotes'])$(id).value='';$('ccSaveCustomer').hidden=!canCreate;$('ccCancelCustomer').hidden=true;};
+    target.querySelectorAll('[data-customer-edit]').forEach(el=>el.onclick=()=>{selected=rows[Number(el.dataset.customerEdit)];$('ccCustomerName').value=selected.name;$('ccCustomerTail').value=selected.phone_tail||'';$('ccCustomerNotes').value=selected.notes||'';$('ccSaveCustomer').hidden=false;$('ccCancelCustomer').hidden=false;});
+    target.querySelectorAll('[data-customer-delete]').forEach(el=>el.onclick=async()=>{const selected=rows[Number(el.dataset.customerDelete)];if(!confirm('确认删除该客户档案？'))return;try{await api('/api/customers/'+encodeURIComponent(selected.id),{method:'DELETE'});await loadControlTab('customers')}catch(e){toast(e.message)}});
+    $('ccCancelCustomer').onclick=reset;
+    $('ccSaveCustomer').onclick=async()=>{const name=$('ccCustomerName').value.trim();if(!name)return toast('请填写客户姓名');const body={name};if(selected)body.id=selected.id;if(hasPermission('ext.customers.phone_edit'))body.phone_tail=$('ccCustomerTail').value;if(hasPermission('ext.customers.notes_edit'))body.notes=$('ccCustomerNotes').value;try{await api('/api/customers',{method:'POST',body:JSON.stringify(body)});toast('客户档案已保存');await loadControlTab('customers')}catch(e){toast(e.message)}};
+}
+async function updateControlWaitlist(id,status){try{await api(`/api/schedule/waitlist/${encodeURIComponent(id)}?status=${status}`,{method:"PATCH"});toast("候补状态已更新");loadControlTab("waitlist")}catch(e){toast(e.message)}}
+
+// ============================================================
+// WebSocket 实时更新
+// ============================================================
+
+function refreshActiveSoon() {
+    if (refreshPending || !currentUser || document.hidden) return;
+    refreshPending = true;
+    setTimeout(() => {
+        refreshPending = false;
+        if (currentUser && !document.hidden) void loadActivePage({background:true});
+    }, 200);
+}
+
+function connectWS() {
+    ws?.close();
+    ws = StoreNetwork.createSocket(event => {
+        try {
+            const message = JSON.parse(event.data);
+            if (message.type !== "schedule") refreshActiveSoon();
+        } catch {}
+    }, (online, reconnected) => { if (online && reconnected) refreshActiveSoon(); });
+}
+window.addEventListener('store:server-reconnected', refreshActiveSoon);
+window.addEventListener('pageshow', event => { if (event.persisted) refreshActiveSoon(); });
+
+async function loadAll() {
+    return loadActivePage();
+}
+
+
+// ============================================================
+// 手机后置摄像头扫码：优先使用原生 BarcodeDetector；不支持时按需加载 ZXing 多格式解码器。
+let barcodeStream = null;
+let barcodeTargetId = null;
+let barcodeMovementType = "";
+let barcodeScanActive = false;
+let barcodeZXingControls = null;
+let barcodeZXingReader = null;
+let barcodeZXingLoading = null;
+let barcodeScanTimer = null;
+let barcodeTorchEnabled = false;
+let barcodeCandidateValue = "";
+let barcodeCandidateCount = 0;
+let barcodeCandidateAt = 0;
+
+const LINEAR_BARCODE_FORMATS = new Set([
+    "ean_13", "ean_8", "upc_a", "upc_e",
+    "code_128", "code_39", "itf", "codabar"
+]);
+
+function validGtinCheckDigit(value) {
+    if (!/^(?:\d{8}|\d{12}|\d{13})$/.test(value)) return false;
+    const body = value.slice(0, -1);
+    let sum = 0;
+    for (let i = body.length - 1, weight = 3; i >= 0; i--, weight = weight === 3 ? 1 : 3) {
+        sum += Number(body[i]) * weight;
+    }
+    return String((10 - (sum % 10)) % 10) === value.slice(-1);
+}
+
+function validUpcE(value) {
+    if (!/^\d{8}$/.test(value)) return false;
+    const ns = value[0], d1=value[1], d2=value[2], d3=value[3], d4=value[4], d5=value[5], d6=value[6];
+    let body;
+    if ("012".includes(d6)) body = ns + d1 + d2 + d6 + "0000" + d3 + d4 + d5;
+    else if (d6 === "3") body = ns + d1 + d2 + d3 + "00000" + d4 + d5;
+    else if (d6 === "4") body = ns + d1 + d2 + d3 + d4 + "00000" + d5;
+    else body = ns + d1 + d2 + d3 + d4 + d5 + "0000" + d6;
+    return validGtinCheckDigit(body + value[7]);
+}
+
+function normalizeLinearBarcode(rawValue, format = "") {
+    const value = String(rawValue ?? "").trim().replace(/\s+/g, "");
+    const normalizedFormat = String(format || "").toLowerCase();
+    if (!value || (normalizedFormat && !LINEAR_BARCODE_FORMATS.has(normalizedFormat))) return null;
+    if (normalizedFormat === "ean_13") return /^\d{13}$/.test(value) && validGtinCheckDigit(value) ? value : null;
+    if (normalizedFormat === "ean_8") return /^\d{8}$/.test(value) && validGtinCheckDigit(value) ? value : null;
+    if (normalizedFormat === "upc_a") return /^\d{12}$/.test(value) && validGtinCheckDigit(value) ? value : null;
+    if (normalizedFormat === "upc_e") return validUpcE(value) ? value : null;
+    if (["code_128", "code_39", "itf", "codabar"].includes(normalizedFormat)) {
+        return /^[\x20-\x7E]{3,80}$/.test(value) ? value : null;
+    }
+    // Local camera/photo decoder only returns EAN/UPC numeric candidates.
+    return validGtinCheckDigit(value) ? value : null;
+}
+
+function registerBarcodeCandidate(rawValue, format = "") {
+    const value = normalizeLinearBarcode(rawValue, format);
+    if (!value) return false; // QR and invalid/partial reads are ignored silently.
+    const now = Date.now();
+    if (value === barcodeCandidateValue && now - barcodeCandidateAt <= 1800) {
+        barcodeCandidateCount += 1;
+    } else {
+        barcodeCandidateValue = value;
+        barcodeCandidateCount = 1;
+    }
+    barcodeCandidateAt = now;
+    if (barcodeCandidateCount < 2) return false;
+    barcodeCandidateValue = "";
+    barcodeCandidateCount = 0;
+    barcodeCandidateAt = 0;
+    applyScannedBarcode(value, format);
+    return true;
+}
+
+function clearBarcodeTargetForRetry(targetId) {
+    const target = $(targetId);
+    if (!target) return;
+    target.value = "";
+    target.dispatchEvent(new Event("input", {bubbles:true}));
+    target.dispatchEvent(new Event("change", {bubbles:true}));
+    if (target.classList.contains("op-search")) {
+        const row = target.closest(".op-row");
+        if (row) {
+            delete row.dataset.productId;
+            [".op-id", ".op-barcode", ".op-stock", ".op-brand", ".op-name",
+             ".op-spec", ".op-location", ".op-unit", ".op-qty"].forEach(selector => {
+                const field = row.querySelector(selector);
+                if (field) field.value = "";
+            });
+            const photo = row.querySelector(".product-photo-slot");
+            if (photo) photo.innerHTML = emptyProductPhoto();
+            row.querySelector(".op-suggestions")?.classList.remove("show");
+        }
+    }
+    if (target.id === "prodSearch") {
+        loadProducts().catch(error => console.warn("清空条码筛选后刷新商品列表失败", error));
+    }
+}
+function loadZXingBrowser() {
+    if (window.ZXingBrowser) return Promise.resolve(window.ZXingBrowser);
+    if (barcodeZXingLoading) return barcodeZXingLoading;
+    barcodeZXingLoading = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        // Prefer the local vendor bundle; CDN is only a last resort when online.
+        script.src = "/static/vendor/zxing-browser-0.2.1.min.js";
+        script.onerror = () => {
+            // CDN fallback needs internet; never imply a local LAN is automatically online.
+            script.onerror = () => reject(new Error("备用扫码库未内置且网络不可用；请手动输入条码"));
+            script.src = "https://unpkg.com/@zxing/browser@0.2.1";
+        };
+        script.async = true;
+        script.onload = () => window.ZXingBrowser ? resolve(window.ZXingBrowser) : reject(new Error("ZXing 库加载失败"));
+        document.head.appendChild(script);
+    });
+    return barcodeZXingLoading;
+}
+const mobileScanPermissions = {
+    "入库": "ext.inventory.inbound_create",
+    "出库": "ext.inventory.outbound_create",
+    "盘点调整": "ext.inventory.stocktake_adjust"
+};
+
+function startMobileScan() {
+    if (!Object.values(mobileScanPermissions).some(hasPermission)) return;
+    if (pendingInventorySubmission) {
+        toast("上一笔登记的提交结果尚未确认，请先核对并重试原单。");
+        return;
+    }
+    $("opRows").replaceChildren();
+    addOpRow();
+    document.querySelectorAll("[data-scan-movement]").forEach(button => {
+        button.hidden = !hasPermission(mobileScanPermissions[button.dataset.scanMovement]);
+    });
+    $("mobileScanMode").classList.add("show");
+}
+
+function closeMobileScan() {
+    $("mobileScanMode").classList.remove("show");
+}
+
+function selectMobileScan(type) {
+    if (!mobileScanPermissions[type] || !hasPermission(mobileScanPermissions[type])) return;
+    $("opType").value = type;
+    const target = $("opRows").querySelector(".op-search");
+    if (!target) {
+        addOpRow();
+        target = $("opRows").lastElementChild?.querySelector(".op-search");
+    }
+    if (!target) return toast("请先添加商品明细");
+    closeMobileScan();
+    startBarcodeScan(target.id, type);
+}
+
+document.querySelectorAll("[data-scan-movement]").forEach(button => {
+    button.addEventListener("click", () => selectMobileScan(button.dataset.scanMovement));
+});
+
+async function applyScannedBarcode(rawValue, format = "") {
+    if (!barcodeScanActive) return;
+    const acceptedValue = normalizeLinearBarcode(rawValue, format);
+    if (!acceptedValue) {
+        const hint = $("barcodeScanHint");
+        if (hint) hint.textContent = "没有识别到有效的一维商品条码；二维码会自动忽略。";
+        return;
+    }
+    rawValue = acceptedValue;
+    barcodeScanActive = false; // stop after a confirmed, checksum-valid linear barcode
+    const targetId = barcodeTargetId;
+    const movement = barcodeMovementType;
+    stopBarcodeScan();
+    const target = $(targetId);
+    if (!target) return;
+    // Refresh data before binding so a barcode lookup never selects stale product details.
+    try { await loadAllProducts(); } catch(error) { toast("同步最新商品失败：" + error.message); return; }
+    const barcodeCandidates = new Set([String(rawValue)]);
+    if (/^\d{12}$/.test(String(rawValue))) barcodeCandidates.add("0" + String(rawValue));
+    if (/^0\d{12}$/.test(String(rawValue))) barcodeCandidates.add(String(rawValue).slice(1));
+    const product = allProducts.find(p => p.barcode !== null && p.barcode !== "" && barcodeCandidates.has(String(p.barcode)));
+    if (target.classList.contains("op-search")) {
+        if (product) {
+            chooseOpProduct(target, product.id);
+            const quantity = target.closest(".op-row").querySelector(".op-qty");
+            if ((movement === "入库" || movement === "出库") && $("opType").value === movement && !quantity.value) {
+                quantity.value = "1";
+                toast(`已匹配：${product.name}，默认数量为 1`);
+            } else {
+                toast(`已匹配：${product.name}，请填写数量`);
+            }
+        } else {
+            target.value = rawValue;
+            target.dispatchEvent(new Event("input", {bubbles:true}));
+            toast("已识别条码，但商品档案没有对应商品");
+        }
+        return;
+    }
+    if (target.id === "prodSearch") {
+        target.value = product ? product.id : rawValue;
+        await loadProducts();
+        toast(product ? `已找到：${product.name}` : "没有找到该条码对应的商品");
+        return;
+    }
+    target.value = rawValue;
+    target.dispatchEvent(new Event("input", {bubbles:true}));
+    target.dispatchEvent(new Event("change", {bubbles:true}));
+    if (target.id === "pBarcode" && product && product.id !== editingId) toast("该条码已被其他商品使用，不能保存重复条码");
+    else toast("条码识别成功");
+}
+
+function drawBarcodeAimRegion(video, canvas, maxWidth = 1100) {
+    if (!video || !video.videoWidth || !video.videoHeight) return false;
+    // Match the visible aiming frame: crop away background/nearby QR labels and focus on a horizontal 1D barcode.
+    const sx = Math.round(video.videoWidth * 0.08);
+    const sy = Math.round(video.videoHeight * 0.30);
+    const sw = Math.max(1, Math.round(video.videoWidth * 0.84));
+    const sh = Math.max(1, Math.round(video.videoHeight * 0.40));
+    const scale = Math.min(1, maxWidth / sw);
+    canvas.width = Math.max(1, Math.round(sw * scale));
+    canvas.height = Math.max(1, Math.round(sh * scale));
+    const ctx = canvas.getContext("2d", {willReadFrequently:true});
+    if (!ctx) return false;
+    ctx.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+    return true;
+}
+async function configureCameraFocus(stream) {
+    const track = stream?.getVideoTracks?.()[0];
+    const torchButton = $("barcodeTorchBtn");
+    if (!track?.getCapabilities || !track.applyConstraints) {
+        if (torchButton) torchButton.hidden = true;
+        return;
+    }
+    const caps = track.getCapabilities();
+    const advanced = {};
+    // 按设备实际能力分别请求连续对焦、曝光和白平衡；不支持的约束不影响摄像头启动。
+    if (caps.focusMode?.includes?.("continuous")) advanced.focusMode = "continuous";
+    else if (caps.focusMode?.includes?.("single-shot")) advanced.focusMode = "single-shot";
+    if (caps.exposureMode?.includes?.("continuous")) advanced.exposureMode = "continuous";
+    if (caps.whiteBalanceMode?.includes?.("continuous")) advanced.whiteBalanceMode = "continuous";
+    if (Object.keys(advanced).length) {
+        try { await track.applyConstraints({advanced:[advanced]}); }
+        catch(error) { console.info("设备不支持全部相机优化约束，使用浏览器默认自动模式", error); }
+    }
+    if (torchButton) {
+        torchButton.hidden = !caps.torch;
+        barcodeTorchEnabled = false;
+        torchButton.textContent = "开启补光灯";
+    }
+}
+async function toggleBarcodeTorch() {
+    const track = barcodeStream?.getVideoTracks?.()[0];
+    if (!track?.getCapabilities || !track.applyConstraints) return;
+    const caps = track.getCapabilities();
+    if (!caps.torch) { toast("当前设备不支持摄像头补光灯"); return; }
+    const next = !barcodeTorchEnabled;
+    try {
+        await track.applyConstraints({advanced:[{torch:next}]});
+        barcodeTorchEnabled = next;
+        const button = $("barcodeTorchBtn");
+        if (button) button.textContent = next ? "关闭补光灯" : "开启补光灯";
+    } catch(error) {
+        toast("补光灯切换失败，请检查设备权限");
+    }
+}
+async function startZXingBarcodeScan() {
+    const lib = await loadZXingBrowser();
+    if (!lib?.BrowserMultiFormatReader) throw new Error("扫码解码器版本不兼容");
+    const video = $("barcodeVideo");
+    barcodeZXingReader = new lib.BrowserMultiFormatReader();
+    barcodeScanActive = true;
+    $("barcodeScanner").classList.add("show");
+    $("barcodeScanHint").textContent = "正在使用后置摄像头识别条码。";
+    const controls = await barcodeZXingReader.decodeFromConstraints(
+        {video:{facingMode:{ideal:"environment"}},audio:false},
+        video,
+        result => {
+            if (!result || !barcodeScanActive) return;
+            const zxingFormat = String(result.getBarcodeFormat?.() || "").toLowerCase();
+            if (!LINEAR_BARCODE_FORMATS.has(zxingFormat)) return;
+            registerBarcodeCandidate(result.getText(), zxingFormat);
+        }
+    );
+    if (!barcodeScanActive) controls.stop();
+    else { barcodeZXingControls = controls; await configureCameraFocus(video.srcObject); }
+}
+// 兼容 iPhone Safari：必须在用户点击事件内立即显示窗口并调用 getUserMedia，
+// 不能先 await 加载扫码脚本，否则 Safari 可能丢失用户手势上下文。
+async function startBarcodeScan(targetId, movementType = "") {
+    stopBarcodeScan(false);
+    barcodeTargetId = targetId;
+    barcodeMovementType = movementType;
+    // A retry always starts from a blank field and blank product row to avoid mixing a previous misread.
+    clearBarcodeTargetForRetry(targetId);
+    barcodeCandidateValue = "";
+    barcodeCandidateCount = 0;
+    barcodeCandidateAt = 0;
+    const modal = $("barcodeScanner");
+    const hint = $("barcodeScanHint");
+    const video = $("barcodeVideo");
+    modal?.classList.add("show");
+    if (hint) hint.textContent = "正在打开后置摄像头，请允许浏览器使用摄像头…";
+
+    if (!window.isSecureContext) {
+        if (hint) hint.textContent = "当前地址不是受信任的 HTTPS 安全连接，无法启动实时摄像头。可先使用下方“拍照识别条码”，或安装并信任门店 HTTPS 证书后重试。";
+        return;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+        if (hint) hint.textContent = "当前浏览器未提供实时摄像头接口。请使用下方“拍照识别条码”。";
+        return;
+    }
+
+    // 关键：在任何 await 之前、仍处于点击手势调用栈时发起摄像头请求。
+    let cameraRequest;
+    try {
+        cameraRequest = navigator.mediaDevices.getUserMedia({
+            video: {
+                facingMode: {ideal: "environment"},
+                width: {ideal: 1280},
+                height: {ideal: 720}
+            },
+            audio: false
+        });
+    } catch (error) {
+        if (hint) hint.textContent = "摄像头启动失败：" + (error.message || "请检查浏览器摄像头权限");
+        return;
+    }
+
+    try {
+        barcodeStream = await cameraRequest;
+        if (!barcodeScanActive && video) {
+            video.setAttribute("playsinline", "");
+            video.setAttribute("autoplay", "");
+            video.muted = true;
+            video.srcObject = barcodeStream;
+            await video.play();
+        }
+        await configureCameraFocus(barcodeStream);
+
+        let detector = null;
+        if (window.BarcodeDetector) {
+            try {
+                const supported = await BarcodeDetector.getSupportedFormats();
+                const scanFormats = ["ean_13","ean_8","upc_a","upc_e","code_128","code_39","itf","codabar"]
+                    .filter(format => supported.includes(format));
+                if (scanFormats.length) detector = new BarcodeDetector({formats: scanFormats});
+            } catch (nativeError) {
+                console.info("当前 Safari 不支持 BarcodeDetector，改用本地 EAN 识别", nativeError);
+            }
+        }
+
+        barcodeScanActive = true;
+        if (detector) {
+            if (hint) hint.textContent = "正在识别一维商品条码；二维码会忽略。请将条码放入中央取景框并保持清晰。";
+            scanBarcodeVideoFrames(detector);
+        } else {
+            if (hint) hint.textContent = "已打开后置摄像头，正在本地识别 EAN/UPC 一维条码；二维码会忽略。识别需连续确认两帧。";
+            scanBarcodeVideoFrames(null);
+        }
+    } catch (error) {
+        // 不关闭窗口：让用户仍可使用 iOS 原生拍照入口。
+        if (barcodeStream) barcodeStream.getTracks().forEach(track => track.stop());
+        barcodeStream = null;
+        if (video) { video.pause(); video.srcObject = null; }
+        barcodeScanActive = false;
+        if (hint) hint.textContent = "实时摄像头启动失败：" + (error.message || "请检查 Safari 摄像头权限、HTTPS 证书信任和网站设置") + "。仍可使用下方“拍照识别条码”。";
+        toast("摄像头未能启动，可使用拍照识别");
+    }
+}
+
+function scanBarcodeVideoFrames(detector = null) {
+    const video = $("barcodeVideo");
+    const canvas = document.createElement("canvas");
+    let consecutiveErrors = 0;
+    let frameCount = 0;
+
+    const scan = async () => {
+        if (!barcodeScanActive || !barcodeStream) return;
+        try {
+            if (video && video.readyState >= 2 && video.videoWidth > 0 && video.videoHeight > 0) {
+                if (detector) {
+                    const codes = await detector.detect(video);
+                    const linearHit = (codes || []).find(code =>
+                        code?.rawValue != null &&
+                        LINEAR_BARCODE_FORMATS.has(String(code.format || "").toLowerCase())
+                    );
+                    if (linearHit && registerBarcodeCandidate(linearHit.rawValue, linearHit.format)) return;
+                    // 原生检测连续漏帧时，间隔性运行本地 EAN 解码作为补充，改善 Android 反光/弯曲标签的识别率。
+                    frameCount += 1;
+                    if (frameCount % 3 === 0) {
+                        drawBarcodeAimRegion(video, canvas, 1100);
+                        const thoroughPass = frameCount % 12 === 0;
+                        const localValue = decodeEANCanvas(canvas, false, {quick: !thoroughPass});
+                        if (localValue && registerBarcodeCandidate(localValue)) return;
+                    }
+                } else {
+                    // 本地识别：常规帧走快速多行检测，每隔数帧执行一次抗反光/弯曲条码的增强检测。
+                    drawBarcodeAimRegion(video, canvas, 1100);
+                    frameCount += 1;
+                    const thoroughPass = frameCount % 4 === 0;
+                    const value = decodeEANCanvas(canvas, false, {quick: !thoroughPass});
+                    if (value && registerBarcodeCandidate(value)) return;
+                }
+                consecutiveErrors = 0;
+            }
+        } catch (error) {
+            consecutiveErrors += 1;
+            if (consecutiveErrors >= 3 && detector) {
+                console.warn("原生条码检测失败，切换本地 EAN 识别", error);
+                detector = null;
+                const hint = $("barcodeScanHint");
+                if (hint) hint.textContent = "已切换本地兼容识别（EAN-13 / EAN-8 / UPC-A）。";
+            }
+        }
+        if (barcodeScanActive) barcodeScanTimer = window.setTimeout(scan, detector ? 160 : 220);
+    };
+    scan();
+}
+
+function captureBarcodeFrame() {
+    const video = $("barcodeVideo");
+    if (!video || video.readyState < 2 || !video.videoWidth) {
+        toast("摄像头画面尚未准备好，请稍候或使用拍照识别");
+        return;
+    }
+    const canvas = document.createElement("canvas");
+    drawBarcodeAimRegion(video, canvas, 1600);
+    const value = decodeEANCanvas(canvas, true, {quick:false});
+    if (!value || !normalizeLinearBarcode(value)) {
+        const hint = $("barcodeScanHint");
+        if (hint) hint.textContent = "当前取景框没有识别到有效一维条码。二维码会忽略，请调整距离、角度或开启补光灯。";
+        toast("未识别成功，请调整角度或使用拍照识别");
+        return;
+    }
+    barcodeScanActive = true;
+    applyScannedBarcode(value);
+}
+
+// Still-image EAN decoder for iOS Safari where BarcodeDetector is unavailable.
+// It reads EAN-13 / EAN-8 / UPC-A from a camera photo without loading third-party code.
+const EAN_L = ["0001101","0011001","0010011","0111101","0100011","0110001","0101111","0111011","0110111","0001011"];
+const EAN_G = ["0100111","0110011","0011011","0100001","0011101","0111001","0000101","0010001","0001001","0010111"];
+const EAN_R = ["1110010","1100110","1101100","1000010","1011100","1001110","1010000","1000100","1001000","1110100"];
+const EAN_PARITY = ["LLLLLL","LLGLGG","LLGGLG","LLGGGL","LGLLGG","LGGLLG","LGGGLL","LGLGLG","LGLGGL","LGGLGL"];
+function decodeEANBits(bits) {
+    const decodeDigit = (chunk, patterns) => patterns.indexOf(chunk);
+    if (bits.length === 95 && bits.slice(0,3)==="101" && bits.slice(45,50)==="01010" && bits.slice(92,95)==="101") {
+        let left="", parity="";
+        for(let i=0;i<6;i++){
+            const chunk=bits.slice(3+i*7,10+i*7);let d=decodeDigit(chunk,EAN_L);
+            if(d>=0){left+=d;parity+="L";continue;}
+            d=decodeDigit(chunk,EAN_G);if(d<0)return null;left+=d;parity+="G";
+        }
+        const first=EAN_PARITY.indexOf(parity);if(first<0)return null;
+        let right="";for(let i=0;i<6;i++){const d=decodeDigit(bits.slice(50+i*7,57+i*7),EAN_R);if(d<0)return null;right+=d;}
+        const digits=String(first)+left+right;let sum=0;for(let i=0;i<12;i++)sum+=Number(digits[i])*(i%2?3:1);
+        if((10-sum%10)%10!==Number(digits[12]))return null;
+        return digits.startsWith("0")?digits.slice(1):digits;
+    }
+    if (bits.length === 67 && bits.slice(0,3)==="101" && bits.slice(31,36)==="01010" && bits.slice(64,67)==="101") {
+        let left="",right="";for(let i=0;i<4;i++){const d=decodeDigit(bits.slice(3+i*7,10+i*7),EAN_L);if(d<0)return null;left+=d;}
+        for(let i=0;i<4;i++){const d=decodeDigit(bits.slice(36+i*7,43+i*7),EAN_R);if(d<0)return null;right+=d;}
+        const digits=left+right;let sum=0;for(let i=0;i<7;i++)sum+=Number(digits[i])*(i%2?3:1);
+        if((10-sum%10)%10!==Number(digits[7]))return null;return digits;
+    }
+    return null;
+}
+function eanPatternRuns(pattern) {
+    const runs = [];
+    let bit = pattern[0], count = 1;
+    for (let i = 1; i < pattern.length; i++) {
+        if (pattern[i] === bit) count++;
+        else { runs.push(count); bit = pattern[i]; count = 1; }
+    }
+    runs.push(count);
+    return runs;
+}
+const EAN_RUN_PATTERNS = {
+    L: EAN_L.map(eanPatternRuns),
+    G: EAN_G.map(eanPatternRuns),
+    R: EAN_R.map(eanPatternRuns)
+};
+function eanRunScore(observed, expected) {
+    if (observed.length !== 4 || expected.length !== 4) return Infinity;
+    const observedTotal = observed.reduce((a,b)=>a+b,0);
+    const expectedTotal = expected.reduce((a,b)=>a+b,0);
+    if (!observedTotal || !expectedTotal) return Infinity;
+    const scale = observedTotal / expectedTotal;
+    let error = 0;
+    for (let i=0;i<4;i++) error += Math.abs(observed[i] - expected[i] * scale);
+    return error / observedTotal;
+}
+function classifyEANRunDigit(runs, index, kind) {
+    if (index + 3 >= runs.length) return null;
+    const expectedBlack = kind === "R";
+    for (let j=0;j<4;j++) {
+        if (runs[index+j].black !== (expectedBlack ? (j%2===0) : (j%2===1))) return null;
+    }
+    const widths = runs.slice(index,index+4).map(x=>x.len);
+    let bestDigit=-1,bestScore=Infinity;
+    const patterns = EAN_RUN_PATTERNS[kind];
+    for (let digit=0;digit<10;digit++) {
+        const score=eanRunScore(widths,patterns[digit]);
+        if(score<bestScore){bestScore=score;bestDigit=digit;}
+    }
+    return bestScore <= 0.36 ? {digit:bestDigit,score:bestScore} : null;
+}
+function validEANGuard(runs,index) {
+    if(index+2>=runs.length)return false;
+    const a=runs[index],b=runs[index+1],c=runs[index+2];
+    if(!a.black||b.black||!c.black)return false;
+    const mean=(a.len+b.len+c.len)/3;
+    return mean>=0.8 && Math.max(a.len,b.len,c.len)/Math.max(0.1,Math.min(a.len,b.len,c.len))<=2.35;
+}
+function validEANCenterGuard(runs,index) {
+    if(index+4>=runs.length)return false;
+    const colors=[false,true,false,true,false];
+    const widths=[];
+    for(let j=0;j<5;j++){
+        if(runs[index+j].black!==colors[j])return false;
+        widths.push(runs[index+j].len);
+    }
+    const mean=widths.reduce((a,b)=>a+b,0)/5;
+    return Math.max(...widths)/Math.max(0.1,Math.min(...widths))<=2.5 && mean>0.5;
+}
+function validEANEndGuard(runs,index) { return validEANGuard(runs,index); }
+function checksumEAN(digits) {
+    if(!/^\d+$/.test(digits))return false;
+    const check=Number(digits[digits.length-1]);
+    let sum=0;
+    for(let i=0;i<digits.length-1;i++){
+        const weight=((digits.length-2-i)%2===0)?3:1;
+        sum+=Number(digits[i])*weight;
+    }
+    return (10-sum%10)%10===check;
+}
+function decodeEAN13Left(runs,at) {
+    let best=null;
+    for(let first=0;first<EAN_PARITY.length;first++){
+        const parity=EAN_PARITY[first];let digits="",score=0,ok=true;
+        for(let i=0;i<6;i++){
+            const got=classifyEANRunDigit(runs,at+i*4,parity[i]);
+            if(!got){ok=false;break;}
+            digits+=String(got.digit);score+=got.score;
+        }
+        if(ok){
+            const candidate={digits,parity,first,score:score/6,next:at+24};
+            if(!best||candidate.score<best.score)best=candidate;
+        }
+    }
+    return best&&best.score<=0.30?best:null;
+}
+function decodeEANFromRuns(runs) {
+    for(let start=0;start<runs.length-2;start++){
+        if(!validEANGuard(runs,start))continue;
+        const decodeSide=(at,count,kindOptions)=>{
+            let digits="",parity="",score=0;
+            for(let n=0;n<count;n++){
+                const idx=at+n*4;
+                let best=null,bestKind="";
+                for(const kind of kindOptions){
+                    const got=classifyEANRunDigit(runs,idx,kind);
+                    if(got&&(!best||got.score<best.score)){best=got;bestKind=kind;}
+                }
+                if(!best)return null;
+                digits+=String(best.digit);parity+=bestKind;score+=best.score;
+            }
+            return {digits,parity,score:score/count,next:at+count*4};
+        };
+        // EAN-13: 6 left digits, center guard, 6 right digits.
+        // EAN-13 左侧 L/G 编码由首位数字决定；联合评分可纠正反光造成的单个数字歧义。
+        const left13=decodeEAN13Left(runs,start+3);
+        if(left13&&validEANCenterGuard(runs,left13.next)){
+            const right13=decodeSide(left13.next+5,6,["R"]);
+            if(right13&&validEANEndGuard(runs,right13.next)){
+                const value=String(left13.first)+left13.digits+right13.digits;
+                if(checksumEAN(value))return value.startsWith("0")?value.slice(1):value;
+            }
+        }
+        // EAN-8: 4 left digits, center guard, 4 right digits.
+        const left8=decodeSide(start+3,4,["L"]);
+        if(left8&&validEANCenterGuard(runs,left8.next)){
+            const right8=decodeSide(left8.next+5,4,["R"]);
+            if(right8&&validEANEndGuard(runs,right8.next)){
+                const value=left8.digits+right8.digits;
+                if(checksumEAN(value))return value;
+            }
+        }
+    }
+    return null;
+}
+function eanOtsuThreshold(gray) {
+    const hist=new Uint32Array(256);let total=gray.length,sum=0;
+    let min=255,max=0;
+    for(let i=0;i<gray.length;i++){const v=gray[i];hist[v]++;sum+=v;if(v<min)min=v;if(v>max)max=v;}
+    if(max-min<12)return (min+max)/2;
+    let sumB=0,wB=0,best=-1,threshold=(min+max)/2;
+    for(let t=0;t<256;t++){
+        wB+=hist[t];if(!wB)continue;
+        const wF=total-wB;if(!wF)break;
+        sumB+=t*hist[t];
+        const mB=sumB/wB,mF=(sum-sumB)/wF;
+        const between=wB*wF*(mB-mF)*(mB-mF);
+        if(between>best){best=between;threshold=t;}
+    }
+    return threshold;
+}
+function eanRunsFromGray(gray, mode=0) {
+    const n=gray.length;if(!n)return [];
+    let min=255,max=0;
+    for(let i=0;i<n;i++){if(gray[i]<min)min=gray[i];if(gray[i]>max)max=gray[i];}
+    if(max-min<8)return [];
+    const threshold=eanOtsuThreshold(gray);
+    const prefix = mode===4 ? new Float32Array(n+1) : null;
+    if(prefix){for(let i=0;i<n;i++)prefix[i+1]=prefix[i]+gray[i];}
+    const runs=[];let previous=null,start=0;
+    for(let x=0;x<n;x++){
+        let black;
+        if(mode===4){
+            const radius=Math.min(24,Math.max(9,Math.floor(n/80)));
+            const lo=Math.max(0,x-radius),hi=Math.min(n,x+radius+1);
+            const local=(prefix[hi]-prefix[lo])/(hi-lo);
+            black=gray[x] < local-5;
+        }else{
+            const ratios=[0.42,0.50,0.58];
+            const t=mode===0?threshold:(min+(max-min)*ratios[mode-1]);
+            black=gray[x]<=t;
+        }
+        if(previous===null){previous=black;start=x;}
+        else if(black!==previous){runs.push({black:previous,len:x-start,start});start=x;previous=black;}
+    }
+    runs.push({black:previous,len:n-start,start});
+    return runs;
+}
+function decodeEANCanvas(canvas, allowRotate = true, options = {}) {
+    const ctx=canvas.getContext("2d",{willReadFrequently:true});
+    if(!ctx||!canvas.width||!canvas.height)return null;
+    const w=canvas.width,h=canvas.height;
+    const quick=!!options.quick;
+    const ratios=quick?[0.34,0.5,0.66]:[0.16,0.24,0.32,0.40,0.48,0.56,0.64,0.72,0.80,0.88];
+    const modes=quick?[0,4]:[0,1,2,3,4];
+    for(const ratio of ratios){
+        const y=Math.min(h-1,Math.max(0,Math.round(h*ratio)));
+        const row=ctx.getImageData(0,y,w,1).data;
+        const gray=new Uint8Array(w);
+        // Luma conversion; mild contrast stretch suppresses low-contrast camera output.
+        let lo=255,hi=0;
+        for(let x=0;x<w;x++){
+            const p=x*4;const v=Math.max(0,Math.min(255,Math.round((row[p]*299+row[p+1]*587+row[p+2]*114)/1000)));
+            gray[x]=v;if(v<lo)lo=v;if(v>hi)hi=v;
+        }
+        const span=hi-lo;
+        if(span<8)continue;
+        const pLo=lo+span*0.04,pHi=hi-span*0.04,stretch=Math.max(1,pHi-pLo);
+        for(let x=0;x<w;x++)gray[x]=Math.max(0,Math.min(255,Math.round((gray[x]-pLo)*255/stretch)));
+        for(const mode of modes){
+            const decoded=decodeEANFromRuns(eanRunsFromGray(gray,mode));
+            if(decoded)return decoded;
+        }
+    }
+    // A 90-degree fallback handles labels attached vertically to narrow cylindrical products.
+    if(allowRotate&&!quick){
+        const rotated=document.createElement("canvas");rotated.width=h;rotated.height=w;
+        const rotatedContext=rotated.getContext("2d",{willReadFrequently:true});
+        rotatedContext.translate(0,rotated.height);rotatedContext.rotate(-Math.PI/2);rotatedContext.drawImage(canvas,0,0);
+        return decodeEANCanvas(rotated,false,{quick:false});
+    }
+    return null;
+}
+async function decodeBarcodePhoto(input){
+    const file=input.files?.[0];if(!file)return;
+    try{
+        const url=URL.createObjectURL(file);const img=new Image();
+        await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=url;});
+        const scale=Math.min(1,1800/Math.max(img.naturalWidth,img.naturalHeight));
+        const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+        canvas.getContext("2d",{willReadFrequently:true}).drawImage(img,0,0,canvas.width,canvas.height);URL.revokeObjectURL(url);
+        const value=decodeEANCanvas(canvas, true, {quick:false});
+        if(!value || !normalizeLinearBarcode(value)){toast("未识别到有效的一维 EAN/UPC 条码；二维码不会作为商品条码，请靠近、保持水平并重新拍摄");return;}
+        barcodeScanActive=true;applyScannedBarcode(value);
+    }catch(error){toast("照片读取失败："+(error.message||"请重新拍摄"));}
+    finally{input.value="";}
+}
+function stopBarcodeScan(hideModal = true) {
+    barcodeScanActive = false;
+    barcodeMovementType = "";
+    barcodeCandidateValue = "";
+    barcodeCandidateCount = 0;
+    barcodeCandidateAt = 0;
+    barcodeTorchEnabled = false;
+    if (barcodeScanTimer) window.clearTimeout(barcodeScanTimer);
+    barcodeScanTimer = null;
+    if (barcodeZXingControls) barcodeZXingControls.stop();
+    barcodeZXingControls = null;
+    barcodeZXingReader = null;
+    if (barcodeStream) barcodeStream.getTracks().forEach(track => track.stop());
+    barcodeStream = null;
+    const video = $("barcodeVideo");
+    if (video) { video.pause(); video.srcObject = null; }
+    if (hideModal) $("barcodeScanner")?.classList.remove("show");
+}
+
+// 启动
+// ============================================================
+
+let initialConnectionFailed = false;
+let initializingInventory = false;
+async function init() {
+    if (initializingInventory || authSubmissionPending) return;
+    initializingInventory = true;
+    try {
+        initialConnectionFailed = !await authInit();
+    } finally {
+        initializingInventory = false;
+    }
+}
+function recoverInventoryLogin() {
+    if (initialConnectionFailed && !currentUser) void init();
+}
+window.addEventListener('store:manual-check-online', recoverInventoryLogin);
+window.addEventListener('store:server-reconnected', recoverInventoryLogin);
+
+
+// 登录键盘快捷键
+$("loginPane").addEventListener("submit", event => {
+    event.preventDefault();
+    void doLogin();
+});
+
+$("setupPassword").addEventListener("keydown", event => {
+    if (event.key === "Enter") doBootstrap();
+});
+
+
+init();
+
+</script>
+
+</body>
+</html>
