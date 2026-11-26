@@ -1,3 +1,4 @@
+# 本地运行文件和构建产物 / Local runtime and build files
 # Python and test output
 __pycache__/
 *.py[cod]
