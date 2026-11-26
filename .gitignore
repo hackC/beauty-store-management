@@ -1,0 +1,57 @@
+# Python and test output
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage*
+htmlcov/
+.venv/
+venv/
+
+# Runtime state and local configuration
+data/
+logs/
+backups/
+attachments/
+product_images/
+purchase/
+/_pre_upgrade_backup_*/
+.env
+.env.*
+config.json
+config.local.json
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.log
+*.log.*
+*.pem
+*.pfx
+*.p12
+*.key
+*.crt
+*.cer
+
+# Business imports and exports
+*.xls
+*.xlsx
+*.xlsm
+*.csv
+*.tsv
+
+# Build and delivery output
+/build/
+/dist/
+/release/
+/release_review/
+*.exe
+*.zip
+!/upgrade_payload/tests_update.zip
+
+# Local editor and OS files
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

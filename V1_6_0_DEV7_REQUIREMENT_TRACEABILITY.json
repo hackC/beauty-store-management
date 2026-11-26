@@ -1,0 +1,49 @@
+{
+  "version": "1.6.0-dev.7",
+  "baseline": "1.6.0-dev.6",
+  "scope": "design foundation only; no business migration or permission behavior change",
+  "requirements": [
+    {
+      "id": "ARCH-01",
+      "requirement": "module boundaries, interface-first and dependency inversion",
+      "artifact": "docs/MODULE_BOUNDARIES_DEV7.md",
+      "status": "DONE_DESIGN_BASELINE"
+    },
+    {
+      "id": "ARCH-02",
+      "requirement": "inventory, schedule, identity, platform, messaging and reporting page/API/data inventory",
+      "artifact": "docs/MODULE_BOUNDARIES_DEV7.md",
+      "status": "DONE_DESIGN_BASELINE"
+    },
+    {
+      "id": "AUTH-01",
+      "requirement": "fine-grained action catalog and legacy permission migration mapping",
+      "artifact": "docs/PERMISSION_CATALOG_DRAFT_DEV7.md",
+      "status": "DRAFT_READY_NOT_ENFORCED"
+    },
+    {
+      "id": "UI-01",
+      "requirement": "independent PC and mobile information architecture",
+      "artifact": "docs/FRONTEND_DESIGN_SYSTEM_DEV7.md",
+      "status": "DONE_DESIGN_BASELINE"
+    },
+    {
+      "id": "UI-02",
+      "requirement": "representative home, inventory and schedule layouts",
+      "artifact": "design_preview/dev7_representative_pages.html",
+      "status": "STATIC_REVIEW_SAMPLE"
+    },
+    {
+      "id": "UI-03",
+      "requirement": "viewport bounds, sticky headings, fixed summaries/actions and modal behavior",
+      "artifact": "docs/FRONTEND_DESIGN_SYSTEM_DEV7.md",
+      "status": "SPECIFIED_NOT_FULL_SITE_IMPLEMENTED"
+    },
+    {
+      "id": "DATA-01",
+      "requirement": "preserve database snapshots and avoid schema migration",
+      "artifact": "V1_6_0_DEV7_DESIGN_FOUNDATION_REPORT.md",
+      "status": "PASS_NO_DB_WRITE"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+/* V1.6.0-dev.8 shared application-shell primitives. Layouts remain page-specific. */
+:root {
+  --app-shell-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --app-shell-safe-left: env(safe-area-inset-left, 0px);
+  --app-shell-safe-right: env(safe-area-inset-right, 0px);
+  --app-shell-focus: #2f6fae;
+}
+
+html, body, #app, .shell, .store-shell, .main, .store-main {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img, video, canvas, svg {
+  max-width: 100%;
+}
+
+button, input, select, textarea {
+  max-width: 100%;
+}
+
+:where(button, a, input, select, textarea, summary):focus-visible {
+  outline: 3px solid rgba(47, 111, 174, .48);
+  outline-offset: 2px;
+}
+
+/* Explicit primitives for pages that need sticky headings/actions inside their own scroll region. */
+.app-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 24;
+  background: var(--card, #fff);
+  isolation: isolate;
+}
+
+.app-sticky-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 24;
+  padding-bottom: max(8px, var(--app-shell-safe-bottom));
+  background: var(--card, #fff);
+  isolation: isolate;
+}
+
+/* Data tables stay inside their available width; headings remain visible while a table scrolls. */
+.app-table-scroll {
+  min-width: 0;
+  max-width: 100%;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.app-table-scroll table {
+  max-width: 100%;
+}
+
+.app-table-scroll thead th,
+.app-table-scroll thead td {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--card, #fff);
+}
+
+.app-shell-live-region {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  body[data-app-shell] {
+    padding-left: 0;
+    padding-right: 0;
+    overflow-x: hidden;
+  }
+
+  body[data-app-shell] :where(.content, .store-content, .page, .panel, .card, .modal-box) {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  body[data-app-shell] :where(.mobile-nav, .store-mobile-nav) {
+    padding-left: max(4px, var(--app-shell-safe-left));
+    padding-right: max(4px, var(--app-shell-safe-right));
+    padding-bottom: max(6px, var(--app-shell-safe-bottom));
+  }
+
+  body[data-app-shell] :where(.mobile-nav button, .store-mobile-nav a) {
+    min-width: 0;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+
+  .app-sticky-actions {
+    padding-bottom: max(10px, var(--app-shell-safe-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-app-shell] * {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+#storeNetworkStatus:not([hidden]) {
+  position:fixed;z-index:100000;top:calc(env(safe-area-inset-top,0px) + 8px);
+  left:50%;transform:translateX(-50%);width:max-content;max-width:92vw;
+  padding:8px 12px;border-radius:10px;background:#8b3d18;color:#fff;
+  font:600 13px/1.45 system-ui,sans-serif;box-shadow:0 5px 18px #0002;
+  text-align:center;pointer-events:none;
+}
+#storeNetworkStatus button {
+  margin-left:8px;border:1px solid #ffffff88;border-radius:7px;background:transparent;
+  color:inherit;padding:3px 8px;pointer-events:auto;
+}
+
+[hidden] {display:none !important;}
+
+#storeNetworkStatus button:disabled { opacity: .8; }
+@media (max-width: 640px) {
+  #storeNetworkStatus:not([hidden]) { top: calc(env(safe-area-inset-top, 0px) + 60px); }
+  #storeNetworkStatus button { min-height: 44px; }
+}
+#storeNetworkStatus[data-network-state="online"] { background: #25556d; }
