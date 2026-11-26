@@ -46,6 +46,8 @@ if (!(Test-Path data/config.json)) {
 
 [RC18 升级和回退说明](RELEASE_CANDIDATE_1_6_0_RC18.md) 针对单独分发的 RC17 → RC18 增量包，命令需要该包内的 `apply_release_candidate.py`。仓库里的 `apply_upgrade.ps1` 是历史开发测试脚本，只接受 1.4.0 源码基线，并要求在独立测试目录传入 `-DevelopmentTestOnly`。
 
+项目维护与架构文档见[文档索引 / Documentation index](docs/README.md)。
+
 ## 开发与验证
 
 安装 Node.js 可运行前端模拟用例。
